@@ -1,4 +1,4 @@
-package piecePuzzle;
+package piecesPuzzle;
 
 public class Piece {
 
@@ -29,7 +29,9 @@ public class Piece {
     public String toString() {
         return "(" + this.x + "," + this.y + ")";
     }
-    
-    
+
+    public static void main(String[] args){
+        System.out.println("ça marche");
+    }
 
 }
