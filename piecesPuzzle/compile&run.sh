@@ -1,0 +1,1 @@
+javac -d build src/piecePuzzle/*.java && jar -cvf build/piecePuzzle/piecePuzzle.jar build/piecePuzzle/Piece.class && mv build/piecePuzzle/piecePuzzle.jar ../jeuAssemblage/lib
