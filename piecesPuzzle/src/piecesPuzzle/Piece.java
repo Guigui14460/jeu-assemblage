@@ -57,7 +57,8 @@ public class Piece {
     }
 
     public static void main(String[] args){
-        System.out.println("ça marche");
+        Piece p = new Piece(1,2);
+        System.out.println(p);
     }
 
 }
