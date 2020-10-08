@@ -17,16 +17,26 @@ public class Board {
         this.listOfPiece = new ArrayList<>();
     }
 
-    public Board placePiece(Piece piece){
-        
-
+    public Board placePiece(Piece piece,int number){
+        this.board[piece.getX()][piece.getY()] = number;
     }
 
 
-    public static void createboard(List<Piece> listOfPiece){
+    public static void createBoard(List<Piece> listOfPiece){
         Board board = new Board();
+        int i = 0;
+        for(Pïece piece : listOfPiece){
+            board.placePiece(piece, i);
+            i++;
+        }
 
     }
+
+
+
+
+
+    
     
 
 
