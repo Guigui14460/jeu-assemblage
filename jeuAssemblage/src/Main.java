@@ -1,5 +1,4 @@
-
-import piecePuzzle.*;
+import piecesPuzzle.Piece;
 
 
 public class Main {
