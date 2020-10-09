@@ -27,14 +27,7 @@ public class Piece {
      * @param y coordonnée en y
      */
     public Piece(int x, int y) {
-        this.setX(x);
-        this.setY(y);
-        this.board = new int[3][3];
-        for(int i = 0; i < this.board.length; i++){
-            for(int j = 0; j < this.board[i].length; j++){
-                this.board[i][j] = 1;
-            }
-        }
+        this(x, y, null);
     }
  
     /**
@@ -51,7 +44,7 @@ public class Piece {
 
     @Override
     public String toString() {
-        return "(" + this.x + "," + this.y + ")";
+        return "(" + this.x + ", " + this.y + ")";
     }
 
     /**
@@ -105,22 +98,49 @@ public class Piece {
     }
 
     /**
-     * Tourne une pièce.
-     * @param nbDegrees nombre de degrès à faire tourner la pièce
-     * @return la même pièce retournée (nouvelle instance)
+     * Récupère le tableau contenant les blocs.
+     * @return tableau contenant les blocs
      */
-    public Piece rotatePiece(Piece.Rotate nbDegrees){
-        int[][] newBoard = new int[this.board[0].length][this.board.length];
-        for(int i = 0; i < this.board.length; i++){
-            for(int j = 0; j < this.board[i].length; j++){
+    public int[][] getBoard(){
+        return this.board;
+    }
+
+    /**
+     * Remplace le tableau contenant les blocs de la pièce.
+     * @param newBoard nouvelle organisation des blocs
+     */
+    protected void setBoard(int[][] newBoard){
+        this.board = newBoard;
+    }
+
+    /**
+     * Tourne une pièce et renvoie une nouvelle instance.
+     * @param piece pièce à tourner
+     * @param nbDegrees nombre de degrès à faire tourner la pièce
+     * @return nouvelle instance de la pièce retournée
+     */
+    public static Piece rotatePiece(Piece piece, Piece.Rotate nbDegrees){
+        int[][] newBoard = new int[piece.board[0].length][piece.board.length];
+        for(int i = 0; i < piece.board.length; i++){
+            for(int j = 0; j < piece.board[i].length; j++){
                 if(nbDegrees.equals(Piece.Rotate.PLUS_90_DEGREES)){
-                    newBoard[j][this.board[i].length - i - 1] = this.board[i][j]; // première ligne devient dernière colonne
+                    newBoard[j][piece.board[i].length - i - 1] = piece.board[i][j]; // première ligne devient dernière colonne
                 } else {
-                    newBoard[j][i] = this.board[i][this.board.length - j - 1]; // première colonne devient dernière ligne
+                    newBoard[j][i] = piece.board[i][piece.board.length - j - 1]; // première colonne devient dernière ligne
                 }
             }
         }
-        return new Piece(this.x, this.y, newBoard);
+        return new Piece(piece.x, piece.y, newBoard);
+    }
+
+    /**
+     * Tourne directement une pièce.
+     * @param nbDegrees nombre de degrès à faire tourner la pièce
+     * @return la même pièce retournée
+     */
+    public void rotatePiece(Piece.Rotate nbDegrees){
+        Piece newPiece = Piece.rotatePiece(this, nbDegrees);
+        this.setBoard(newPiece.board);
     }
 
     public static void main(String[] args){
@@ -134,11 +154,10 @@ public class Piece {
         System.out.println(p);
         p.showBoard();
         System.out.println("----------------------------------------");
-        Piece p2 = p.rotatePiece(Rotate.PLUS_90_DEGREES);
+        Piece p2 = Piece.rotatePiece(p, Rotate.PLUS_90_DEGREES);
         p2.showBoard();
         System.out.println("----------------------------------------");
         p2 = p2.rotatePiece(Rotate.MINUS_90_DEGREES);
         p2.showBoard();
     }
-
 }
