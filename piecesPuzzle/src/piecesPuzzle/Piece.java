@@ -41,4 +41,16 @@ public interface Piece {
      * @throws IllegalArgumentException levée lorsque les coordonnées passées ne permettent pas d'accéder à un élément du tableau
      */
     public boolean occupies(int x, int y) throws IllegalArgumentException;
+
+    /**
+     * retourne la forme de la piece
+     * @return tableau de bool
+     */
+    public boolean[][] getBoard();
+
+
+
+    public int getX();
+
+    public int getY();
 }
