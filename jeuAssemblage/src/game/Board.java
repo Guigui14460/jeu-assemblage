@@ -21,10 +21,11 @@ public class Board {
         try {
             int[][] pieceBoard = piece.getBoard();
 
-            if(this.board[piece.getX()][piece.getY()] != number){
-                for(int i = piece.getX(); i < pieceBoard.length;i++){
-                    for (int j = piece.getY(); j < pieceBoard[i].length; j++) {
+            if(this.board[piece.getX()][piece.getY()] == 0){
+                for(int i = piece.getX(); i < pieceBoard.length + piece.getX();i++){
+                    for (int j = piece.getY(); j < pieceBoard[i].length + piece.getY(); j++) {
                         this.board[i][j] = number;
+                       
                     }
                 }
 
@@ -41,7 +42,7 @@ public class Board {
 
     public static Board createBoard(List<Piece> listOfPiece){
         Board board = new Board();
-        int i = 0;
+        int i = 1;
         
         for(Piece piece : listOfPiece){
             board.placePiece(piece, i);
