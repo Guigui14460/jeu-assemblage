@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
 
-        RectanglePiece rec = new RectanglePiece(2, 2,3,3);
+        RectanglePiece rec = new RectanglePiece(2,2,3,3);
         ArrayList<Piece> list = new ArrayList<>();
         list.add(rec);
 

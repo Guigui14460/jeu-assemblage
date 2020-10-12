@@ -14,7 +14,7 @@ public class RectanglePiece extends Piece {
     public RectanglePiece(int x, int y, int width, int heigth){
         super(x, y);
         int[][] newBoard = new int[width][heigth];
-        for(int i = 0; i < width; i++){
+        for(int i = 0; i < width; i++){0
             for(int j = 0; j < heigth; j++){
                 newBoard[i][j] = 1;
             }
