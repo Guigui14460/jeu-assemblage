@@ -68,7 +68,7 @@
         <jar jarfile="${dist.home}/${app.fullname}.jar"
              basedir="${build.home}">
             <manifest>
-                <attribute name="Main-Class" value="piecesPuzzle.Piece"/>
+                <attribute name="Main-Class" value="piecesPuzzle.Main"/>
                 <!-- <attribute name="Class-Path" value="xxxxx.jar" /> -->
             </manifest>
         </jar>

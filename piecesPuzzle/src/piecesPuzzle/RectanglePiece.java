@@ -3,7 +3,7 @@ package piecesPuzzle;
 /**
  * Classe définissant une pièce rectangulaire.
  */
-public class RectanglePiece extends Piece {
+public class RectanglePiece extends PieceImplementation {
     /**
      * Constructeur définissant tous les attributs.
      * @param x coordonnée en x
@@ -12,14 +12,12 @@ public class RectanglePiece extends Piece {
      * @param heigth hauteur de la pièce
      */
     public RectanglePiece(int x, int y, int width, int heigth){
-        super(x, y);
-        int[][] newBoard = new int[width][heigth];
-        for(int i = 0; i < width; i++){0
-            for(int j = 0; j < heigth; j++){
-                newBoard[i][j] = 1;
+        super(x, y, width, heigth);
+        for(int i = 0; i < height; i++){
+            for(int j = 0; j < width; j++){
+                this.board[i][j] = true;
             }
         }
-        this.board = newBoard;
     }
 
     /**
