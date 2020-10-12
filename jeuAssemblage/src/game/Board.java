@@ -1,4 +1,4 @@
-package Board;
+package game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,25 +13,50 @@ public class Board {
 
 
     public Board(){
-        this.board = new int[50][50];
+        this.board = new int[10][10];
         this.listOfPiece = new ArrayList<>();
     }
 
-    public Board placePiece(Piece piece,int number){
-        this.board[piece.getX()][piece.getY()] = number;
+    public void placePiece(Piece piece,int number){
+        try {
+            int[][] pieceBoard = piece.getBoard();
+
+            if(this.board[piece.getX()][piece.getY()] != number){
+                for(int i = piece.getX(); i < pieceBoard.length;i++){
+                    for (int j = piece.getY(); j < pieceBoard[i].length; j++) {
+                        this.board[i][j] = number;
+                    }
+                }
+
+            }
+            
+           
+        } catch (Exception e) {
+            System.out.println("wrong place for the piece");
+        }
+       
+       
     }
 
 
-    public static void createBoard(List<Piece> listOfPiece){
+    public static Board createBoard(List<Piece> listOfPiece){
         Board board = new Board();
         int i = 0;
-        for(Pïece piece : listOfPiece){
+        
+        for(Piece piece : listOfPiece){
             board.placePiece(piece, i);
             i++;
         }
-
+        return board;
     }
 
+    public int[][] getBoard(){
+        return this.board;
+    }
+
+    public void addPiece(Piece p){
+        this.listOfPiece.add(p);
+    }
 
 
 

@@ -7,10 +7,11 @@ import game.*;
 public class TerminalDisplayer implements Displayer {
    
     
-    private Board board;
+    private int[][] board;
 
     public TerminalDisplayer(Board board){
-        this.board = board;
+        this.board = board.getBoard();
+        
     }
 
     public void show(){

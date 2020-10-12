@@ -157,7 +157,7 @@ public class Piece {
         Piece p2 = Piece.rotatePiece(p, Rotate.PLUS_90_DEGREES);
         p2.showBoard();
         System.out.println("----------------------------------------");
-        p2 = p2.rotatePiece(Rotate.MINUS_90_DEGREES);
+        //p2 = p2.rotatePiece(Rotate.MINUS_90_DEGREES);
         p2.showBoard();
     }
 }
