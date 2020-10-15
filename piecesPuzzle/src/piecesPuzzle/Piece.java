@@ -45,6 +45,7 @@ public interface Piece {
      * @return coordonnée en x
      */
     public int getX();
+    public int getX();
 
     /**
      * Récupère la coordonnée en y.
