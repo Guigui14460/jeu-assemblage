@@ -14,7 +14,7 @@ public class Main {
         list.add(rec);
 
 
-        Board board = Board.createBoard(list);
+        PlateauPuzzle board = PlateauPuzzle.createBoard(list);
 
 
         Displayer display = new TerminalDisplayer(board);

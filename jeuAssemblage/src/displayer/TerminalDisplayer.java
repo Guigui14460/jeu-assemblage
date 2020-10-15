@@ -9,7 +9,7 @@ public class TerminalDisplayer implements Displayer {
     
     private int[][] board;
 
-    public TerminalDisplayer(Board board){
+    public TerminalDisplayer(PlateauPuzzle board){
         this.board = board.getBoard();
         
     }
