@@ -27,7 +27,6 @@ public interface Piece {
     /**
      * Tourne la pièce.
      * @param nbDegrees nombre de degrès à faire tourner la pièce
-     * @return la même pièce retournée
      */
     public void rotate(Piece.Rotate nbDegrees);
 

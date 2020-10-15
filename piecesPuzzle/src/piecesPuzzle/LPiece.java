@@ -9,7 +9,7 @@ public class LPiece extends PieceImplementation {
      * @param x coordonnée en x
      * @param y coordonnée en y
      * @param width largeur de la pièce
-     * @param heigth hauteur de la pièce
+     * @param height hauteur de la pièce
      */
     public LPiece(int x, int y, int width, int height){
         super(x, y, width, height);

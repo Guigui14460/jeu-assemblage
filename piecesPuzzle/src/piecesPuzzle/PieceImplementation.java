@@ -19,7 +19,7 @@ public abstract class PieceImplementation implements Piece {
      * @param x coordonnée en x
      * @param y coordonnée en y
      * @param width largeur de la pièce
-     * @param heigth hauteur de la pièce
+     * @param height hauteur de la pièce
      */
     public PieceImplementation(int x, int y, int width, int height){
         this.setX(x);
@@ -103,7 +103,7 @@ public abstract class PieceImplementation implements Piece {
 
     /**
      * Met à jour la hauteur de la pièce.
-     * @param width nouvelle hauteur de la pièce
+     * @param height nouvelle hauteur de la pièce
      */
     protected void setHeight(int height){
         this.height = height;
