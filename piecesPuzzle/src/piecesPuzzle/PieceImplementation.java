@@ -51,10 +51,6 @@ public abstract class PieceImplementation implements Piece {
         return "(" + this.x + ", " + this.y + ")";
     }
 
-    /**
-     * Récupère la coordonnée en x.
-     * @return coordonnée en x
-     */
     @Override
     public int getX() {
         return this.x;
@@ -68,10 +64,6 @@ public abstract class PieceImplementation implements Piece {
         this.x = x;
     }
 
-    /**
-     * Récupère la coordonnée en y.
-     * @return coordonnée en y
-     */
     @Override
     public int getY() {
         return this.y;
@@ -117,10 +109,6 @@ public abstract class PieceImplementation implements Piece {
         this.height = height;
     }
 
-    /**
-     * Récupère le tableau contenant les blocs.
-     * @return tableau contenant les blocs
-     */
     @Override
     public boolean[][] getBoard(){
         return this.board;
