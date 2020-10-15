@@ -17,15 +17,21 @@ public class Board {
     public void placePiece(Piece piece, int number) {
         try {
             boolean[][] pieceBoard = piece.getBoard();
-            piece.showBoard();
-
+            
+            
             if (this.board[piece.getX()][piece.getY()] == 0) {
 
                 for (int i = piece.getX(), z = 0; i < pieceBoard.length + piece.getX(); i++, z++) {
+                    for (int j = piece.getY(), y = 0; j < pieceBoard[z].length + piece.getY(); j++, y++) {
 
-                    for (int j = piece.getY(); j < pieceBoard[z].length + piece.getY(); j++) {
+                        if(this.board[i][j] != 0){
+                            throw new Exception("zezrez");
+                        }
 
-                        this.board[i][j] = number;
+                        if(pieceBoard[z][y] == true){
+                            this.board[i][j] = number;
+                        }
+                        
                     }
                 }
 

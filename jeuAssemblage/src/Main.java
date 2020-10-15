@@ -1,21 +1,22 @@
-import piecesPuzzle.Piece;
-import piecesPuzzle.RectanglePiece;
+import piecesPuzzle.*;
+
 import game.*;
 
 import java.util.ArrayList;
 
 import displayer.*;
+
 public class Main {
     public static void main(String[] args) throws Exception {
 
 
-        RectanglePiece rec = new RectanglePiece(2,2,3,3);
+        RectanglePiece rec = new RectanglePiece(1,1,2,3);
+        TPiece tp = new TPiece(3,4);
         ArrayList<Piece> list = new ArrayList<>();
         list.add(rec);
-
+        list.add(tp);
 
         PlateauPuzzle board = PlateauPuzzle.createBoard(list);
-
 
         Displayer display = new TerminalDisplayer(board);
         display.show();
