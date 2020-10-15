@@ -1,7 +1,5 @@
 package piecesPuzzle;
 
-// créer des sous-classe avec des constructeurs qui vérifient différents paramètres
-
 /**
  * Interface décrivant les caractéristiques d'une pièce.
  */
@@ -43,14 +41,20 @@ public interface Piece {
     public boolean occupies(int x, int y) throws IllegalArgumentException;
 
     /**
-     * retourne la forme de la piece
-     * @return tableau de bool
+     * Récupère la coordonnée en x.
+     * @return coordonnée en x
      */
-    public boolean[][] getBoard();
-
-
-
     public int getX();
 
+    /**
+     * Récupère la coordonnée en y.
+     * @return coordonnée en y
+     */
     public int getY();
+
+    /**
+     * Récupère le tableau contenant les blocs.
+     * @return tableau contenant les blocs
+     */
+    public boolean[][] getBoard();
 }
