@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import piecesPuzzle.*;
 
-public class Board {
+public class PlateauPuzzle {
 
     private int board[][];
     private List<Piece> listOfPiece;
 
-    public Board() {
+    public PlateauPuzzle() {
         this.board = new int[10][10];
         this.listOfPiece = new ArrayList<>();
     }
@@ -44,8 +44,8 @@ public class Board {
 
     }
 
-    public static Board createBoard(List<Piece> listOfPiece) {
-        Board board = new Board();
+    public static PlateauPuzzle createBoard(List<Piece> listOfPiece) {
+        PlateauPuzzle board = new PlateauPuzzle();
         int i = 1;
 
         for (Piece piece : listOfPiece) {
