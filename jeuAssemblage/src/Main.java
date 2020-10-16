@@ -11,7 +11,7 @@ public class Main {
 
 
         RectanglePiece rec = new RectanglePiece(1,1,2,3);
-        TPiece tp = new TPiece(3,4);
+        TPiece tp = new TPiece(0,1);
         ArrayList<Piece> list = new ArrayList<>();
         list.add(rec);
         list.add(tp);

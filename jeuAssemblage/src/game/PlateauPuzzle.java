@@ -2,6 +2,7 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import piecesPuzzle.*;
 
 public class PlateauPuzzle {
@@ -15,6 +16,8 @@ public class PlateauPuzzle {
     }
 
     public void placePiece(Piece piece, int number) {
+        Long time = System.nanoTime();
+        List<Integer> coor = new ArrayList<>();
         try {
             boolean[][] pieceBoard = piece.getBoard();
             
@@ -25,10 +28,12 @@ public class PlateauPuzzle {
                     for (int j = piece.getY(), y = 0; j < pieceBoard[z].length + piece.getY(); j++, y++) {
 
                         if(this.board[i][j] != 0){
-                            throw new Exception("zezrez");
+                            throw new Exception("whala la place est prise");
                         }
 
                         if(pieceBoard[z][y] == true){
+                            coor.add(i);
+                            coor.add(j);
                             this.board[i][j] = number;
                         }
                         
@@ -38,9 +43,16 @@ public class PlateauPuzzle {
             }
 
         } catch (Exception e) {
-            System.out.println(e);
-            System.out.println("wrong place for the piece");
+            while(!coor.isEmpty()){
+                this.board[coor.get(0)][coor.get(1)] = 0;
+                coor.remove(0);
+                coor.remove(0);              
+            }
         }
+
+        Long time2 = System.nanoTime();
+        time2-=time;
+        System.out.println(time2);
 
     }
 
