@@ -49,7 +49,8 @@ public class Main {
 
         System.out.println("===================================");
         
-        p4 = new TPiece(20, 5, 5, 7);
+        int x = 20, y = 5, width = 5, height = 7;
+        p4 = new TPiece(x, y, width, height);
         System.out.println(p4);
         p4.showBoard();
         System.out.println("-----------");
@@ -58,5 +59,19 @@ public class Main {
         System.out.println("-----------");
         p4.rotate(Piece.Rotate.MINUS_90_DEGREES);
         p4.showBoard();
+        
+        // tester l'accès aux valeurs de la pièce
+        for(int i = 0; i < width; i++){
+            for(int j = 0; j < height; j++){
+                p4.occupies(j, i);
+            }
+        }
+        // tester l'accès aux valeurs de la pièce en fonction du placement de celle-ci
+        for(int i = x; i < x + width; i++){
+            for(int j = y; j < y + height; j++){
+                // System.out.println(i + "," + j);
+                p4.occupiesInBoard(i, j);
+            }
+        }
     }
 }

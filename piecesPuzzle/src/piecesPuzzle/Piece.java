@@ -10,12 +10,51 @@ public interface Piece {
     public enum Rotate {
         PLUS_90_DEGREES, MINUS_90_DEGREES
     };
+    
+    /**
+     * Récupère la coordonnée en x.
+     * @return coordonnée en x
+     */
+    public int getX();
+
+    /**
+     * Récupère la coordonnée en y.
+     * @return coordonnée en y
+     */
+    public int getY();
+
+    /**
+     * Récupère le tableau contenant les blocs.
+     * @return tableau contenant les blocs
+     */
+    public boolean[][] getBoard();
+
+    /**
+     * Récupère la largeur de la pièce.
+     * @return largeur de la pièce
+     */
+    public int getWidth();
+
+    /**
+     * Récupère la hauteur de la pièce.
+     * @return hauteur de la pièce
+     */
+    public int getHeight();
 
     /**
      * Affiche le tableau contenant les blocs de la pièce.
      * Les 1 correspond aux blocs et les 0, au vide.
      */
     public void showBoard();
+
+    /**
+     * Met une valeur à la place donnée dans le tableau.
+     * @param x coordonnée en x
+     * @param y coordonnée en y
+     * @param value valeur à placer
+     * @throws IllegalArgumentException levée lorsque les coordonnées passées ne permettent pas d'accéder à un élément du tableau
+     */
+    public void setBoardValueAtPosition(int x, int y, boolean value) throws IllegalArgumentException;
 
     /**
      * Déplace une pièce.
@@ -40,20 +79,10 @@ public interface Piece {
     public boolean occupies(int x, int y) throws IllegalArgumentException;
 
     /**
-     * Récupère la coordonnée en x.
-     * @return coordonnée en x
+     * Vérifie si un bloc de la pièce occupe une certaine place dans le tableau interne de la pièce en fonction de la place de la pièce dans un plateau de jeu.
+     * @param x coordonnées en x correspond à une place d'un plateau de jeu
+     * @param y coordonnées en y correspond à une place d'un plateau de jeu
+     * @return boolean vérifiant l'occupation d'un bloc à la place à tester en fonction de la place de la pièce dans un plateau
      */
-    public int getX();
-
-    /**
-     * Récupère la coordonnée en y.
-     * @return coordonnée en y
-     */
-    public int getY();
-
-    /**
-     * Récupère le tableau contenant les blocs.
-     * @return tableau contenant les blocs
-     */
-    public boolean[][] getBoard();
+    public boolean occupiesInBoard(int x, int y) throws IllegalArgumentException;
 }
