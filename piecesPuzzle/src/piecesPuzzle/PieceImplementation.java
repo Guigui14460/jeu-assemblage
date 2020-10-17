@@ -77,10 +77,7 @@ public abstract class PieceImplementation implements Piece {
         this.y = y;
     }
 
-    /**
-     * Récupère la largeur de la pièce.
-     * @return largeur de la pièce
-     */
+    @Override
     public int getWidth() {
         return this.width;
     }
@@ -93,10 +90,7 @@ public abstract class PieceImplementation implements Piece {
         this.width = width;
     }
 
-    /**
-     * Récupère la hauteur de la pièce.
-     * @return hauteur de la pièce
-     */
+    @Override
     public int getHeight() {
         return this.height;
     }
@@ -128,6 +122,27 @@ public abstract class PieceImplementation implements Piece {
         this.setHeight(board.length);
     }
 
+    /**
+     * Vérifie que les coordonnées données se trouvent bien à l'intérieur du tableau.
+     * @param x coordonnée en x
+     * @param y coordonnée en y
+     * @throws IllegalArgumentException levée lorsque les coordonnées passées ne permettent pas d'accéder à un élément du tableau
+     */
+    protected void verifyCoordinates(int x, int y) throws IllegalArgumentException {
+        if(x < 0 || x >= this.height){
+            throw new IllegalArgumentException("the x arg is invalid");
+        }
+        if(y < 0 || y >= this.width){
+            throw new IllegalArgumentException("the y arg is invalid");
+        }
+    }
+
+    @Override
+    public void setBoardValueAtPosition(int x, int y, boolean value) throws IllegalArgumentException {
+        this.verifyCoordinates(x, y);
+        this.board[x][y] = value;
+    }
+
     @Override
     public void showBoard(){
         for(int i = 0; i < this.height; i++){
@@ -145,8 +160,8 @@ public abstract class PieceImplementation implements Piece {
 
     @Override
     public void translate(int dx, int dy){
-        this.setX(x + dx);
-        this.setY(y + dy);
+        this.setX(this.x + dx);
+        this.setY(this.y + dy);
     }
 
     @Override
@@ -167,36 +182,26 @@ public abstract class PieceImplementation implements Piece {
         this.setBoard(newBoard);
     }
 
-    /**
-     * Vérifie que les coordonnées données se trouvent bien à l'intérieur du tableau.
-     * @param x coordonnée en x
-     * @param y coordonnée en y
-     * @throws IllegalArgumentException levée lorsque les coordonnées passées ne permettent pas d'accéder à un élément du tableau
-     */
-    protected void verifyCoordinates(int x, int y) throws IllegalArgumentException {
-        if(x < 0 || x >= height){
-            throw new IllegalArgumentException("the x arg is invalid");
-        }
-        if(y < 0 || y >= width){
-            throw new IllegalArgumentException("the y arg is invalid");
-        }
-    }
-
     @Override
     public boolean occupies(int x, int y) throws IllegalArgumentException {
         this.verifyCoordinates(x, y);
         return this.board[x][y];
     }
 
-    /**
-     * Met une valeur à la place donnée dans le tableau.
-     * @param x coordonnée en x
-     * @param y coordonnée en y
-     * @param value valeur à placer
-     * @throws IllegalArgumentException levée lorsque les coordonnées passées ne permettent pas d'accéder à un élément du tableau
-     */
-    public void setBoardValueAtPosition(int x, int y, boolean value) throws IllegalArgumentException {
-        this.verifyCoordinates(x, y);
-        this.board[x][y] = value;
+    @Override
+    public boolean occupiesInBoard(int x, int y) {
+        if(x < this.x || x > this.x + this.width){
+            return false;
+        }
+        if(y < this.y || y > this.y + this.height){
+            return false;
+        }
+        x -= this.x;
+        y -= this.y;
+        try{
+            return this.board[y][x];
+        } catch(Exception e) {
+            return false;
+        }
     }
 }

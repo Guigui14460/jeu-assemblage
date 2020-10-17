@@ -16,7 +16,6 @@ public class PlateauPuzzle {
     }
 
     public void placePiece(Piece piece, int number) {
-        Long time = System.nanoTime();
         List<Integer> coor = new ArrayList<>();
         try {
             boolean[][] pieceBoard = piece.getBoard();
@@ -49,10 +48,6 @@ public class PlateauPuzzle {
                 coor.remove(0);              
             }
         }
-
-        Long time2 = System.nanoTime();
-        time2-=time;
-        System.out.println(time2);
 
     }
 
