@@ -1,5 +1,5 @@
 import piecesPuzzle.*;
-
+import piecesPuzzle.Piece.Rotate;
 import game.*;
 
 import java.util.ArrayList;
@@ -32,6 +32,12 @@ public class Main {
         board2.addPiece(tp);
         time = System.nanoTime() - time;
         System.out.println("Tps exec partie Guigui : " + time);
+        RectanglePiece rec2 = new RectanglePiece(6, 2, 1, 3);
+        board2.addPiece(rec2);
+        TPiece tp2 = new TPiece(5, 0, 3, 3);
+        System.out.println(board2.addPiece(tp2));
+        System.out.println(board2.rotatePiece(tp2, Rotate.PLUS_90_DEGREES));
+        System.out.println(board2.rotatePiece(tp2, Rotate.PLUS_90_DEGREES));
         board2.showBoard();
     }
 }

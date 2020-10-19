@@ -1,7 +1,7 @@
 package game;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import piecesPuzzle.Piece;
 
@@ -12,7 +12,7 @@ public class PlateauPuzzle2 {
     /**
      * Liste contenant les pièces.
      */
-    private List<Piece> pieces = new ArrayList<>();
+    private Set<Piece> pieces = new HashSet<>();
 
     /**
      * Dimensions du plateau.
@@ -93,5 +93,46 @@ public class PlateauPuzzle2 {
             }
         }
         return false;
+    }
+
+    public boolean rotatePiece(Piece pieceToTurn, Piece.Rotate rotationAngle){
+        boolean toAdd = !this.pieces.contains(pieceToTurn);
+        boolean plus90Degrees = rotationAngle.equals(Piece.Rotate.PLUS_90_DEGREES);
+    
+        pieceToTurn.rotate(rotationAngle);
+        if(toAdd){
+            if(!this.addPiece(pieceToTurn)){
+                pieceToTurn.rotate((plus90Degrees ? Piece.Rotate.MINUS_90_DEGREES : Piece.Rotate.PLUS_90_DEGREES));
+                return false;
+            }
+        } else {
+            this.pieces.remove(pieceToTurn);
+            if(!this.addPiece(pieceToTurn)){
+                this.pieces.add(pieceToTurn);
+                pieceToTurn.rotate((plus90Degrees ? Piece.Rotate.MINUS_90_DEGREES : Piece.Rotate.PLUS_90_DEGREES));
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean translatePiece(Piece pieceToTranslate, int dx, int dy){
+        boolean toAdd = !this.pieces.contains(pieceToTranslate);
+    
+        pieceToTranslate.translate(dx, dy);
+        if(toAdd){
+            if(!this.addPiece(pieceToTranslate)){
+                pieceToTranslate.translate(-dx, -dy);
+                return false;
+            }
+        } else {
+            this.pieces.remove(pieceToTranslate);
+            if(!this.addPiece(pieceToTranslate)){
+                this.pieces.add(pieceToTranslate);
+                pieceToTranslate.translate(-dx, -dy);
+                return false;
+            }
+        }
+        return true;
     }
 }
