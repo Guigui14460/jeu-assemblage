@@ -1,9 +1,11 @@
 package piecesPuzzle;
 
+import piecesPuzzle.observer.AbstractListenableModel;
+
 /**
  * Classe abstraite définissant une pièce générale pouvant être utilisée dans n'importe quel jeu de puzzle.
  */
-public abstract class PieceImplementation implements Piece {
+public abstract class PieceImplementation extends AbstractListenableModel implements Piece {
     /**
      * Coordonnées et dimensions de la pièce.
      */
@@ -13,6 +15,11 @@ public abstract class PieceImplementation implements Piece {
      * Tableau contenant les blocs de la pièce.
      */
     protected boolean board[][];
+
+    /**
+     * Représente le type de la pièce.
+     */
+    protected String pieceType;
  
     /**
      * Constructeur. Initialise un tableau 2D vide à la taille {@code height} sur {@code width}.
@@ -21,7 +28,8 @@ public abstract class PieceImplementation implements Piece {
      * @param width largeur de la pièce
      * @param height hauteur de la pièce
      */
-    public PieceImplementation(int x, int y, int width, int height){
+    public PieceImplementation(int x, int y, int width, int height, String pieceType){
+        this.pieceType = pieceType;
         this.setX(x);
         this.setY(y);
         this.setWidth(width);
@@ -60,7 +68,7 @@ public abstract class PieceImplementation implements Piece {
      * Met à jour la coordonnée en x.
      * @param x nouvelle coorodnnée en x
      */
-    public void setX(int x){
+    protected void setX(int x){
         this.x = x;
     }
 
@@ -73,7 +81,7 @@ public abstract class PieceImplementation implements Piece {
      * Met à jour la coordonnée en y.
      * @param y nouvelle coorodnnée en y
      */
-    public void setY(int y){
+    protected void setY(int y){
         this.y = y;
     }
 
@@ -141,6 +149,7 @@ public abstract class PieceImplementation implements Piece {
     public void setBoardValueAtPosition(int x, int y, boolean value) throws IllegalArgumentException {
         this.verifyCoordinates(x, y);
         this.board[x][y] = value;
+        this.fireChange();
     }
 
     @Override
@@ -159,9 +168,17 @@ public abstract class PieceImplementation implements Piece {
     }
 
     @Override
+    public void showCaracteristics(){
+        System.out.println("Piece type : " + this.pieceType);
+        System.out.println("Coordinates : " + this.toString());
+        System.out.println("Dimensions : (" + this.width + ", " + this.height + ")");
+    }
+
+    @Override
     public void translate(int dx, int dy){
         this.setX(this.x + dx);
         this.setY(this.y + dy);
+        this.fireChange();
     }
 
     @Override
@@ -180,6 +197,7 @@ public abstract class PieceImplementation implements Piece {
         this.setWidth(width);
         this.setHeight(height);
         this.setBoard(newBoard);
+        this.fireChange();
     }
 
     @Override

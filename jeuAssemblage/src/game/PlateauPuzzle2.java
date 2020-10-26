@@ -4,11 +4,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import piecesPuzzle.Piece;
+import piecesPuzzle.observer.AbstractListenableModel;
+import piecesPuzzle.observer.ModelListener;
+
+// TODO: à mettre dans la partie modèle
 
 /**
  * Classe représentant le plateau d'un jeu de pièce.
  */
-public class PlateauPuzzle2 {
+public class PlateauPuzzle2 extends AbstractListenableModel implements ModelListener {
     /**
      * Liste contenant les pièces.
      */
@@ -67,7 +71,9 @@ public class PlateauPuzzle2 {
         if(this.collision(piece)){
             return false;
         }
-        return this.pieces.add(piece);
+        boolean added = this.pieces.add(piece);
+        this.fireChange();
+        return added;
     }
 
     /**
@@ -113,6 +119,7 @@ public class PlateauPuzzle2 {
                 return false;
             }
         }
+        this.fireChange();
         return true;
     }
 
@@ -133,6 +140,12 @@ public class PlateauPuzzle2 {
                 return false;
             }
         }
+        this.fireChange();
         return true;
+    }
+
+    @Override
+    public void somethingHasChanged(Object arg0) {
+        this.fireChange();
     }
 }

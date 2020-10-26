@@ -12,7 +12,7 @@ public class RectanglePiece extends PieceImplementation {
      * @param heigth hauteur de la pièce
      */
     public RectanglePiece(int x, int y, int width, int heigth){
-        super(x, y, width, heigth);
+        super(x, y, width, heigth, "Rectangle");
         for(int i = 0; i < height; i++){
             for(int j = 0; j < width; j++){
                 this.board[i][j] = true;

@@ -12,7 +12,7 @@ public class InvertedLPiece extends PieceImplementation {
      * @param height hauteur de la pièce
      */
     public InvertedLPiece(int x, int y, int width, int height){
-        super(x, y, width, height);
+        super(x, y, width, height, "Inverted L");
         for(int i = 0; i < height; i++){
             this.setBoardValueAtPosition(i, width-1, true);
         }
