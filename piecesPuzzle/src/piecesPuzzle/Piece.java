@@ -1,9 +1,11 @@
 package piecesPuzzle;
 
+import piecesPuzzle.observer.ListenableModel;
+
 /**
  * Interface décrivant les caractéristiques d'une pièce.
  */
-public interface Piece {
+public interface Piece extends ListenableModel {
     /**
      * Énumérateur permettant de définir les angles dans lesquels les pièces peuvent tourner.
      */
@@ -46,6 +48,11 @@ public interface Piece {
      * Les 1 correspond aux blocs et les 0, au vide.
      */
     public void showBoard();
+
+    /**
+     * Affiche les caractéristiques de la pièce.
+     */
+    public void showCaracteristics();
 
     /**
      * Met une valeur à la place donnée dans le tableau.

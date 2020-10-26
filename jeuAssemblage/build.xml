@@ -58,9 +58,8 @@
         </copy>
     </target>
 
-<!-- TODO: rajouter javadoc sur la target "dist" -->
     <!-- ==================== Dist Target ===================================== -->
-    <target name="dist" depends="clean,compile" description="Create binary distribution">
+    <target name="dist" depends="clean,javadoc" description="Create binary distribution">
         <copy  todir="${dist.home}/lib">
             <fileset dir="${lib.home}"/>
         </copy>

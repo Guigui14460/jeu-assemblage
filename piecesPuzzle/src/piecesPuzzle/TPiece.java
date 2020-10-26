@@ -12,7 +12,7 @@ public class TPiece extends PieceImplementation {
      * @param height hauteur de la pièce
      */
     public TPiece(int x, int y, int width, int height){
-        super(x, y, width, height);
+        super(x, y, width, height, "T");
         for(int i = 0; i < width; i++){
             this.setBoardValueAtPosition(0, i, true);
         }

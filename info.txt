@@ -1,0 +1,6 @@
+Pour CC, on peut faire un JTable en dessous pour représenter les pièces sous forme de tableau
+avec affichage d'un nom, de coordonnées, de taille, et d'orientation.
+Mettre à jour le plateau (JPanel) avec le JTable.
+Adpater sur le JTable => AbstractTableModel.
+Ajouter des Factory avec le même système qu'utiliser pour le random (pattern Abstract Factory).
+Créer différentes dispositions de pièces (pattern Strategy).
