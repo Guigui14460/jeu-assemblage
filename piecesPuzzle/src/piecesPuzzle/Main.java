@@ -1,5 +1,8 @@
 package piecesPuzzle;
 
+/**
+ * Classe principal pour tester les pièces.
+ */
 public class Main {
     public static void main(String[] args){
         Piece p, p2, p3, p4;

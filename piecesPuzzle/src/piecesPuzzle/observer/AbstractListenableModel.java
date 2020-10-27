@@ -36,7 +36,7 @@ public abstract class AbstractListenableModel implements ListenableModel {
      */
     protected void fireChange(){
         for(ModelListener l: this.listeners){
-            l.somethingHasChanged(this);
+            l.somethingHasChanged(this); // on prévient les écouteurs
         }
     }
 }

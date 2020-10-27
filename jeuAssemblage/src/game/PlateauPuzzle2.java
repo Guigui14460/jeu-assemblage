@@ -1,13 +1,11 @@
 package game;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import piecesPuzzle.Piece;
 import piecesPuzzle.observer.AbstractListenableModel;
 import piecesPuzzle.observer.ModelListener;
-
-// TODO: à mettre dans la partie modèle
 
 /**
  * Classe représentant le plateau d'un jeu de pièce.
@@ -16,7 +14,7 @@ public class PlateauPuzzle2 extends AbstractListenableModel implements ModelList
     /**
      * Liste contenant les pièces.
      */
-    private Set<Piece> pieces = new HashSet<>();
+    private List<Piece> pieces = new ArrayList<>();
 
     /**
      * Dimensions du plateau.
@@ -55,6 +53,23 @@ public class PlateauPuzzle2 extends AbstractListenableModel implements ModelList
     }
 
     /**
+     * Récupère le nombre de pièces contenues sur le plateau.
+     * @return nombre de pièces
+     */
+    public int getNumberOfPiece(){
+        return this.pieces.size();
+    }
+
+    /**
+     * Récupère la pièce à un certain indice.
+     * @param index indice de la pièce à récupérer
+     * @return pièce posée à l'indice choisi
+     */
+    public Piece getPiece(int index){
+        return this.pieces.get(index);
+    }
+
+    /**
      * Permet d'ajouter une pièce à la liste en vérifiant si elle peut être placée.
      * @param piece pièce à ajouter
      * @return booléen représentant si la pièce à été ajouté à la liste ou non
@@ -84,11 +99,13 @@ public class PlateauPuzzle2 extends AbstractListenableModel implements ModelList
     public boolean collision(Piece piece){
         for(Piece p: this.pieces){
             if(!p.equals(piece)){
+                // on prend les coordonnées minimaux et maximaux
                 int minX = Math.min(p.getX(), piece.getX());
                 int maxX = Math.max(p.getX() + p.getWidth(), piece.getX() + piece.getWidth());
                 int minY = Math.min(p.getY(), piece.getY());
                 int maxY = Math.max(p.getY() + p.getHeight(), piece.getY() + piece.getHeight());
 
+                // on vérifie pour chaque place du plus grand rectangle englobant les 2 pièces
                 for(int i = minX; i < maxX; i++){
                     for(int j = minY; j < maxY; j++){
                         if(piece.occupiesInBoard(i, j) && p.occupiesInBoard(i, j)){
@@ -101,6 +118,12 @@ public class PlateauPuzzle2 extends AbstractListenableModel implements ModelList
         return false;
     }
 
+    /**
+     * Tourne la pièce choisie dans un angle choisi en vérifiant si cela est possible.
+     * @param pieceToTurn pièce à tourner
+     * @param rotationAngle l'angle pour la rotation
+     * @return booléen représentant le fait que la rotation a été effectuée ou non
+     */
     public boolean rotatePiece(Piece pieceToTurn, Piece.Rotate rotationAngle){
         boolean toAdd = !this.pieces.contains(pieceToTurn);
         boolean plus90Degrees = rotationAngle.equals(Piece.Rotate.PLUS_90_DEGREES);
@@ -123,6 +146,13 @@ public class PlateauPuzzle2 extends AbstractListenableModel implements ModelList
         return true;
     }
 
+    /**
+     * Déplace la pièce choisie selon les valeurs données.
+     * @param pieceToTranslate pièce à déplacer
+     * @param dx déplacement de la pièce sur l'axe des X
+     * @param dy déplacement de la pièce sur l'axe des Y
+     * @return booléen représentant le fait que la rotation a été effectuée ou non
+     */
     public boolean translatePiece(Piece pieceToTranslate, int dx, int dy){
         boolean toAdd = !this.pieces.contains(pieceToTranslate);
     

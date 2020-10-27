@@ -1,5 +1,6 @@
 import piecesPuzzle.*;
 import piecesPuzzle.Piece.Rotate;
+import view.GUI;
 import view.TerminalView;
 import game.*;
 import model.PieceFactory;
@@ -41,15 +42,15 @@ public class Main {
         // System.out.println(board2.rotatePiece(tp2, Rotate.PLUS_90_DEGREES));
         // board2.showBoard();
 
-        // PlateauPuzzle2 board3 = new PlateauPuzzle2(10, 10);
+        PlateauPuzzle2 board3 = new PlateauPuzzle2(10, 10);
         // TerminalView view = new TerminalView(board3);
-        // System.out.println(board3.addPiece(rec));
-        // System.out.println(board3.addPiece(tp));
-        // System.out.println(board3.addPiece(new RectanglePiece(6, 2, 1, 3)));
-        // TPiece tp2 = new TPiece(5, 0, 3, 3);
-        // System.out.println(board3.addPiece(tp2));
-        // System.out.println(board3.rotatePiece(tp2, Rotate.PLUS_90_DEGREES));
-        // System.out.println(board3.rotatePiece(tp2, Rotate.PLUS_90_DEGREES));
+        System.out.println(board3.addPiece(rec));
+        System.out.println(board3.addPiece(tp));
+        System.out.println(board3.addPiece(new RectanglePiece(6, 2, 1, 3)));
+        TPiece tp2 = new TPiece(5, 0, 3, 3);
+        System.out.println(board3.addPiece(tp2));
+        System.out.println(board3.rotatePiece(tp2, Rotate.PLUS_90_DEGREES));
+        System.out.println(board3.rotatePiece(tp2, Rotate.PLUS_90_DEGREES));
 
         Piece test1 = PieceFactory.getPiece(new RandomPieceFactory(1, 0, 5, 8));
         test1.showCaracteristics();
@@ -60,5 +61,7 @@ public class Main {
         Piece test3 = PieceFactory.getPiece(new RandomPieceFactory(3, 6));
         test3.showCaracteristics();
         test3.showBoard();
+
+        new GUI(board3);
     }
 }

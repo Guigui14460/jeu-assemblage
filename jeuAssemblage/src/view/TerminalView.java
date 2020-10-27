@@ -4,12 +4,22 @@ import displayer.Displayer;
 import game.PlateauPuzzle2;
 import piecesPuzzle.observer.ModelListener;
 
+/**
+ * Vue sur le terminal respectant le modèle MVC.
+ */
 public class TerminalView implements Displayer, ModelListener {
+    /**
+     * Plateau de jeu.
+     */
     private PlateauPuzzle2 board;
 
+    /**
+     * Constructeur par défaut.
+     * @param board plateau de jeu
+     */
     public TerminalView(PlateauPuzzle2 board){
         this.board = board;
-        this.board.addModelListener(this);
+        this.board.addModelListener(this); // on ajoute l'objet en tant qu'écouteur du plateau
     }
 
     @Override
