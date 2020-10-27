@@ -3,19 +3,19 @@
     <property name="app.name"      value="piecesPuzzle" />
     <property name="app.version"   value="0.1"/>
     <property name="app.fullname"   value="${app.name}-${app.version}"/>
-    <property name="build.home"    value="${basedir}/build"/>
     
+    <property name="build.home"    value="${basedir}/build"/>
     <property name="dist.home"     value="${basedir}/dist"/>
     <property name="docs.home"     value="${basedir}/docs"/>
     <property name="src.home"      value="${basedir}/src"/>
-    
     <property name="lib.home"      value="${basedir}/lib"/>
+
     <property name="javac.version" value="1.8"/>
     <property name="javac.encoding"      value="UTF-8"/>
 
     <!-- ==================== Compile options =========================== -->
     <property name="compile.debug"       value="true"/>
-    <property name="compile.deprecation" value="false"/>
+    <property name="compile.deprecation" value="true"/>
     <property name="compile.optimize"    value="true"/>
   
     <!-- ==================== Compilation Classpath =========================== -->

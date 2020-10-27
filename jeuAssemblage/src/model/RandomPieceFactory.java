@@ -65,9 +65,11 @@ public class RandomPieceFactory implements PieceAbstractFactory {
 
     @Override
     public Piece createPiece() throws Exception {
+        // choix de la classe à instancier
         Class<?> pieceClassChosen = RandomPieceFactory.pieceClasses.get(RandomPieceFactory.random.nextInt(RandomPieceFactory.pieceClasses.size()));
-        if(this.width != -1){
+        if(this.width != -1){ // si on veut une pièce paramétrée
             if(TPiece.class.equals(pieceClassChosen)){
+                // changements pour éviter les exceptions pour la pièce en T
                 if(this.width < 3){
                     this.width = 3;
                 } else if(this.width % 2 == 0){
@@ -80,6 +82,7 @@ public class RandomPieceFactory implements PieceAbstractFactory {
                 }
             }
             if(LPiece.class.equals(pieceClassChosen) || InvertedLPiece.class.equals(pieceClassChosen)){
+                // on modifie pour que ça ressemble à un L (ou L inversé)
                 if(this.width < 2){
                     this.width = 2;
                 }
@@ -88,13 +91,15 @@ public class RandomPieceFactory implements PieceAbstractFactory {
                 }
             }
         }
+
+        // instanciation de la pièce
         Constructor<?>[] constructors = pieceClassChosen.getConstructors();
         for(Constructor<?> constructor: constructors){
-            if(this.width == -1){
+            if(this.width == -1){ // pièce par défaut
                 if(constructor.getParameterCount() == 2){
                     return (Piece) constructor.newInstance(this.x, this.y);
                 }
-            } else {
+            } else { // pièce paramétrée
                 if(constructor.getParameterCount() == 4){
                     return (Piece) constructor.newInstance(this.x, this.y, this.width, this.height);
                 }

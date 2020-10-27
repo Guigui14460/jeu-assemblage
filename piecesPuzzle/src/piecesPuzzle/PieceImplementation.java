@@ -70,6 +70,7 @@ public abstract class PieceImplementation extends AbstractListenableModel implem
      */
     protected void setX(int x){
         this.x = x;
+        this.fireChange();
     }
 
     @Override
@@ -83,6 +84,7 @@ public abstract class PieceImplementation extends AbstractListenableModel implem
      */
     protected void setY(int y){
         this.y = y;
+        this.fireChange();
     }
 
     @Override
@@ -96,6 +98,7 @@ public abstract class PieceImplementation extends AbstractListenableModel implem
      */
     protected void setWidth(int width){
         this.width = width;
+        this.fireChange();
     }
 
     @Override
@@ -109,6 +112,7 @@ public abstract class PieceImplementation extends AbstractListenableModel implem
      */
     protected void setHeight(int height){
         this.height = height;
+        this.fireChange();
     }
 
     @Override
@@ -128,6 +132,7 @@ public abstract class PieceImplementation extends AbstractListenableModel implem
         this.board = board;
         this.setWidth(board[0].length);
         this.setHeight(board.length);
+        this.fireChange();
     }
 
     /**
