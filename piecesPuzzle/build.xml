@@ -8,7 +8,9 @@
     <property name="dist.home"     value="${basedir}/dist"/>
     <property name="docs.home"     value="${basedir}/docs"/>
     <property name="src.home"      value="${basedir}/src"/>
+    <property name="test.home"      value="${basedir}/src"/>
     <property name="lib.home"      value="${basedir}/lib"/>
+    <property name="reports.home"  value="${basedir}/reports" />
 
     <property name="javac.version" value="1.8"/>
     <property name="javac.encoding"      value="UTF-8"/>
@@ -31,14 +33,15 @@
     <!-- ==================== Clean Target ==================================== -->
     <target name="clean" description="Delete old build and dist directories">
         <delete dir="${build.home}"/>
-        <delete dir="${build.test.home}"/>
         <delete dir="${dist.home}"/>
+        <delete dir="${reports.home}"/>
     </target>
 
     <!-- ==================== Prepare Target ================================== -->
     <target name="prepare">
         <mkdir dir="${build.home}"/>
         <mkdir dir="${dist.home}"/>
+        <mkdir dir="${reports.home}"/>
     </target>
   
     <!-- ==================== Compile Target ================================== -->
@@ -81,6 +84,9 @@
         <mkdir dir="${dist.home}/docs/api"/>
         <javadoc sourcepath="${src.home}"
                  destdir="${dist.home}/docs/api"
+                 defaultexcludes="yes"
+                 author="true"
+                 version="true"
                  packagenames="*">
             <classpath>
                 <fileset dir="${lib.home}">
@@ -91,7 +97,25 @@
     </target>
 
     <!-- ==================== Run Target ================================== -->
-    <target name="run" depends="dist">
+    <target name="run" depends="compile">
         <java jar="${dist.home}/${app.fullname}.jar" fork="true" />
+    </target>
+
+    <!-- ==================== Test Target ================================== -->
+    <target name="test" depends="dist">
+        <junit printsummary="yes" haltonfailure="no">
+            <classpath refid="compile.classpath"/>
+            <classpath>
+                <pathelement location="${test.home}"/>
+                <pathelement location="${build.home}"/>
+            </classpath>
+
+            <formatter type="plain" />
+            <batchtest fork="yes" todir="${reports.home}">
+                <fileset dir="${test.home}">
+                    <include name="**/*Test*.java" />
+                </fileset>
+            </batchtest>
+        </junit>
     </target>
 </project>
