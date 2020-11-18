@@ -14,7 +14,7 @@ import org.junit.function.ThrowingRunnable;
 
 import junit.framework.TestCase;
 
-public class TestLPiece extends TestCase {
+public class TestInvertedLPiece extends TestCase {
     public static final List<Piece> PIECES = new ArrayList<>();
     public static final Map<Integer, List<Integer>> COORDINATES = TestPiece.COORDINATES;
     public static final Map<Integer, List<Integer>> DIMENSIONS = TestPiece.DIMENSIONS;
@@ -34,7 +34,7 @@ public class TestLPiece extends TestCase {
             height = random.nextInt(MAX_HEIGHT - 1) + 1;
             DIMENSIONS.put(i, new ArrayList<>(Arrays.asList(width, height)));
 
-            PIECES.add(new LPiece(x, y, width, height));
+            PIECES.add(new InvertedLPiece(x, y, width, height));
         }
     }
 
@@ -47,14 +47,14 @@ public class TestLPiece extends TestCase {
             y = random.nextInt(MAX_HEIGHT * 2) - MAX_HEIGHT;
             width = random.nextInt(MAX_WIDTH - 1) + 1;
             height = random.nextInt(MAX_HEIGHT - 1) + 1;
-            assertNotNull(new LPiece(x, y, width, height));
+            assertNotNull(new InvertedLPiece(x, y, width, height));
         }
     }
 
     @Test
-    public void testRotateWithLPiece() {
+    public void testRotateWithInvertedLPiece() {
         for (int i = 0; i < NUMBER_OF_PIECES; i++) {
-            LPiece piece = (LPiece) PIECES.get(i);
+            InvertedLPiece piece = (InvertedLPiece) PIECES.get(i);
             boolean[][] orientation1 = new boolean[piece.getHeight()][piece.getWidth()];
             boolean[][] orientation2 = new boolean[piece.getWidth()][piece.getHeight()];
             boolean[][] orientation3 = new boolean[piece.getHeight()][piece.getWidth()];
@@ -67,11 +67,11 @@ public class TestLPiece extends TestCase {
                 orientation4[j][piece.getHeight() - 1] = true;
             }
             for (int j = 0; j < piece.getHeight(); j++) {
-                orientation1[j][0] = true;
-                orientation3[j][piece.getWidth() - 1] = true;
+                orientation1[j][piece.getWidth() - 1] = true;
+                orientation3[j][0] = true;
 
-                orientation2[0][j] = true;
-                orientation4[piece.getWidth() - 1][j] = true;
+                orientation2[piece.getWidth() - 1][j] = true;
+                orientation4[0][j] = true;
             }
 
             assertArrayEquals(orientation1, piece.getBoard());

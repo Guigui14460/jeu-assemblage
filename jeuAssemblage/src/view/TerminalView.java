@@ -1,23 +1,23 @@
 package view;
 
-import displayer.Displayer;
-import game.PlateauPuzzle2;
+import model.PlateauPuzzle;
 import piecesPuzzle.observer.ModelListener;
 
 /**
  * Vue sur le terminal respectant le modèle MVC.
  */
-public class TerminalView implements Displayer, ModelListener {
+public class TerminalView implements View, ModelListener {
     /**
      * Plateau de jeu.
      */
-    private PlateauPuzzle2 board;
+    private PlateauPuzzle board;
 
     /**
      * Constructeur par défaut.
+     * 
      * @param board plateau de jeu
      */
-    public TerminalView(PlateauPuzzle2 board){
+    public TerminalView(PlateauPuzzle board) {
         this.board = board;
         this.board.addModelListener(this); // on ajoute l'objet en tant qu'écouteur du plateau
     }

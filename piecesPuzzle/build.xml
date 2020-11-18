@@ -97,12 +97,12 @@
     </target>
 
     <!-- ==================== Run Target ================================== -->
-    <target name="run" depends="compile">
+    <target name="run" depends="dist">
         <java jar="${dist.home}/${app.fullname}.jar" fork="true" />
     </target>
 
     <!-- ==================== Test Target ================================== -->
-    <target name="test" depends="compile">
+    <target name="test" depends="dist">
         <junit printsummary="yes" haltonfailure="no">
             <classpath refid="compile.classpath"/>
             <classpath>

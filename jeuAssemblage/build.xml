@@ -100,7 +100,7 @@
     </target>
 
     <!-- ==================== Test Target ================================== -->
-    <target name="test" depends="compile">
+    <target name="test" depends="dist">
         <junit printsummary="yes" haltonfailure="no">
             <classpath refid="compile.classpath"/>
             <classpath>
