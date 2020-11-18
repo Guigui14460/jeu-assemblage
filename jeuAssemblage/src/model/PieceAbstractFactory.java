@@ -8,6 +8,7 @@ import piecesPuzzle.Piece;
 public interface PieceAbstractFactory {
     /**
      * Crée une pièce à partir d'une usine.
+     * 
      * @return pièce créée
      * @throws Exception levée lorsque l'on arrive pas à créer la pièce
      */

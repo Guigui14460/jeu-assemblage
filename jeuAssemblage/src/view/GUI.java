@@ -2,7 +2,7 @@ package view;
 
 import javax.swing.JFrame;
 
-import game.PlateauPuzzle2;
+import model.PlateauPuzzle;
 
 import java.awt.Container;
 import java.awt.Dimension;
@@ -18,23 +18,26 @@ public class GUI extends JFrame {
      * Constructeur initialisant un plateau vide de dimension (10, 10).
      */
     public GUI() {
-        this(new PlateauPuzzle2(10, 10));
+        this(new PlateauPuzzle(10, 10));
     }
 
     /**
-     * Constructeur initialisant un plateau vide d'une taille ({@code width}, {@code height})
-     * @param width largeur du tableau à initialiser
+     * Constructeur initialisant un plateau vide d'une taille ({@code width},
+     * {@code height})
+     * 
+     * @param width  largeur du tableau à initialiser
      * @param height hauteur du tableau à initialiser
      */
     public GUI(int width, int height) {
-        this(new PlateauPuzzle2(width, height));
+        this(new PlateauPuzzle(width, height));
     }
 
     /**
      * Constructeur.
+     * 
      * @param board plateau à utiliser
      */
-    public GUI(PlateauPuzzle2 board){
+    public GUI(PlateauPuzzle board) {
         super("Jeu assemblage de pièces");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setPreferredSize(new Dimension(400, 250));

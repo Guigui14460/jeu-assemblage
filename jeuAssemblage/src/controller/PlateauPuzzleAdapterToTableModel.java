@@ -2,7 +2,7 @@ package controller;
 
 import javax.swing.table.AbstractTableModel;
 
-import game.PlateauPuzzle2;
+import model.PlateauPuzzle;
 import piecesPuzzle.Piece;
 import piecesPuzzle.observer.ModelListener;
 
@@ -36,13 +36,14 @@ public class PlateauPuzzleAdapterToTableModel extends AbstractTableModel impleme
     /**
      * Plateau à utiliser.
      */
-    private PlateauPuzzle2 board;
+    private PlateauPuzzle board;
 
     /**
      * Constructeur par défaut.
+     * 
      * @param board plateau à utiliser
      */
-    public PlateauPuzzleAdapterToTableModel(PlateauPuzzle2 board){
+    public PlateauPuzzleAdapterToTableModel(PlateauPuzzle board) {
         this.board = board;
         this.board.addModelListener(this); // on ajouter l'écouteur au plateau de jeu
     }

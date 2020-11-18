@@ -6,42 +6,44 @@ package piecesPuzzle;
 public class TPiece extends PieceImplementation {
     /**
      * Constructeur définissant tous les attributs.
-     * @param x coordonnée en x
-     * @param y coordonnée en y
-     * @param width largeur de la pièce
+     * 
+     * @param x      coordonnée en x
+     * @param y      coordonnée en y
+     * @param width  largeur de la pièce
      * @param height hauteur de la pièce
      */
-    public TPiece(int x, int y, int width, int height){
+    public TPiece(int x, int y, int width, int height) {
         super(x, y, width, height, "T");
-        for(int i = 0; i < width; i++){
-            this.setBoardValueAtPosition(0, i, true);
+        for (int i = 0; i < width; i++) {
+            this.setBoardValueAtPosition(i, 0, true);
         }
-        for(int i = 1; i < height; i++){
-            this.setBoardValueAtPosition(i, width/2, true);
+        for (int i = 1; i < height; i++) {
+            this.setBoardValueAtPosition(width / 2, i, true);
         }
     }
 
     /**
-     * Constructeur par défaut.
-     * Initialise {@code width} à la valeur 3 et {@code height} à la valeur 5.
+     * Constructeur par défaut. Initialise {@code width} à la valeur 3 et
+     * {@code height} à la valeur 5.
+     * 
      * @param x coordonnée en x
      * @param y coordonnée en y
      */
-    public TPiece(int x, int y){
+    public TPiece(int x, int y) {
         this(x, y, 3, 5);
     }
 
     @Override
-    public void setWidth(int width){
-        if(width % 2 == 0){
+    public void setWidth(int width) {
+        if (width % 2 == 0) {
             throw new IllegalArgumentException("width must be an odd value");
         }
         super.setWidth(width);
     }
 
     @Override
-    public void setHeight(int height){
-        if(height % 2 == 0){
+    public void setHeight(int height) {
+        if (height % 2 == 0) {
             throw new IllegalArgumentException("height must be an odd value");
         }
         super.setHeight(height);

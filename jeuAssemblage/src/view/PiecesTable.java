@@ -4,7 +4,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import controller.PlateauPuzzleAdapterToTableModel;
-import game.PlateauPuzzle2;
+import model.PlateauPuzzle;
 
 /**
  * Composant permettant d'afficher le tableau de pièce de puzzle.
@@ -14,9 +14,10 @@ public class PiecesTable extends JScrollPane {
 
     /**
      * Constructeur par défaut.
+     * 
      * @param board plateau à utiliser
      */
-    public PiecesTable(PlateauPuzzle2 board) {
+    public PiecesTable(PlateauPuzzle board) {
         super(new JTable(new PlateauPuzzleAdapterToTableModel(board)));
     }
 }
