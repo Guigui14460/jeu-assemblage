@@ -1,5 +1,13 @@
-Ajouter des Factory avec le même système qu'utiliser pour le random (pattern Abstract Factory).
 Créer différentes dispositions de pièces (pattern Strategy).
 Pattern Strategy pour pouvoir intégrer différentes intelligences artificielles (brute-force, Alphabeta, Random, etc)
 
-Test fonctionnel pour ajouter des éléments dans une liste statique (pour optimiser les pièces comme pour le TP6)
+Test fonctionnel pour ajouter des éléments dans une liste statique (pour optimiser les pièces comme proposer dans le TP6)
+
+
+Question : Comment faire pour faire différentes dispositions de pièces ?
+           Dispositions scriptées, dispositions aléatoires ?
+
+Question sur l'IA ou les IAs à implémenter : 
+Pour les IA à implémenter, peut-on simplement faire de l'aléatoire ou 
+faut-il réellement en implémenter une comme un Négamax ou A* ou encore 
+qqch d'autre de plus approprié pour le problème ?

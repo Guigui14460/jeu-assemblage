@@ -26,7 +26,7 @@ public class Main {
         System.out.println("\n\n");
 
         PlateauPuzzle board3 = new PlateauPuzzle(10, 10);
-        TerminalView view = new TerminalView(board3);
+        new TerminalView(board3);
         System.out.println(board3.addPiece(rec));
         System.out.println(board3.addPiece(tp));
         System.out.println(board3.addPiece(new RectanglePiece(6, 2, 1, 3)));
