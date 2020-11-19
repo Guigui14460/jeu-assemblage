@@ -84,7 +84,7 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
         if (piece.getX() < 0 || piece.getY() < 0) {
             return false;
         }
-        if (piece.getX() + piece.getWidth() >= this.width || piece.getY() + piece.getHeight() >= this.height) {
+        if (piece.getX() + piece.getWidth() - 1 >= this.width || piece.getY() + piece.getHeight() - 1 >= this.height) {
             return false;
         }
         if (this.collision(piece)) {
