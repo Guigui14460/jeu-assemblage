@@ -63,7 +63,7 @@ public class PlateauPuzzleAdapterToTableModel extends AbstractTableModel impleme
         Piece p = this.board.getPiece(rowIndex);
         switch (columnIndex) {
             case PIECE_TYPE:
-                return p.getClass().toString();
+                return p.getPieceType();
             case PIECE_COORDINATES:
                 return p.toString();
             case PIECE_DIMENSIONS:

@@ -5,7 +5,6 @@ import javax.swing.JFrame;
 import model.PlateauPuzzle;
 
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.BorderLayout;
 
 /**
@@ -15,38 +14,24 @@ public class GUI extends JFrame {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Constructeur initialisant un plateau vide de dimension (10, 10).
-     */
-    public GUI() {
-        this(new PlateauPuzzle(10, 10));
-    }
-
-    /**
-     * Constructeur initialisant un plateau vide d'une taille ({@code width},
-     * {@code height})
-     * 
-     * @param width  largeur du tableau à initialiser
-     * @param height hauteur du tableau à initialiser
-     */
-    public GUI(int width, int height) {
-        this(new PlateauPuzzle(width, height));
-    }
-
-    /**
-     * Constructeur.
+     * Constructeur par défaut.
      * 
      * @param board plateau à utiliser
      */
     public GUI(PlateauPuzzle board) {
         super("Jeu assemblage de pièces");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setPreferredSize(new Dimension(400, 250));
+
+        GraphicsPanel boardView = new GraphicsPanel(board);
 
         Container contentPane = this.getContentPane();
         contentPane.setLayout(new BorderLayout());
-        contentPane.add(new PiecesTable(board), BorderLayout.CENTER);
+        contentPane.add(boardView, BorderLayout.CENTER);
+        contentPane.add(new PiecesTable(board, boardView), BorderLayout.SOUTH);
 
         this.pack();
         this.setVisible(true);
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
     }
 }

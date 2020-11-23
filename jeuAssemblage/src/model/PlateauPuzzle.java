@@ -22,14 +22,59 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
     private int width, height;
 
     /**
-     * Constructeur par défaut.
+     * Chaîne de responsabilité pour vérifier l'action du joueur.
+     */
+    private Chain actionResponsabilityChain;
+
+    /**
+     * Constructeur.
+     * 
+     * @param width                     largeur du plateau
+     * @param height                    hauteur du plateau
+     * @param actionResponsabilityChain chaîne de responsabilité pour vérifier
+     *                                  l'action du joueur
+     */
+    public PlateauPuzzle(int width, int height, Chain actionResponsabilityChain) {
+        this.width = width;
+        this.height = height;
+        this.actionResponsabilityChain = actionResponsabilityChain;
+    }
+
+    /**
+     * Constructeur par défaut. Initialise la chaîne de responsabilité par défaut.
      * 
      * @param width  largeur du plateau
      * @param height hauteur du plateau
      */
     public PlateauPuzzle(int width, int height) {
-        this.width = width;
-        this.height = height;
+        this(width, height, new InBoardChain(new CollisionChain(null)));
+    }
+
+    /**
+     * Récupère la largeur du plateau.
+     * 
+     * @return largeur du plateau
+     */
+    public int getWidth() {
+        return this.width;
+    }
+
+    /**
+     * Récupère la hauteur du plateau.
+     * 
+     * @return hauteur du plateau
+     */
+    public int getHeight() {
+        return this.height;
+    }
+
+    /**
+     * Récupère la chaîne de responsabilité vérifiant les actions du joueur.
+     * 
+     * @return chaîne de responsabilité
+     */
+    public Chain getActionResponsabilityChain() {
+        return this.actionResponsabilityChain;
     }
 
     /**
@@ -81,18 +126,12 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
      * @see #collision(Piece)
      */
     public boolean addPiece(Piece piece) {
-        if (piece.getX() < 0 || piece.getY() < 0) {
+        if (!this.actionResponsabilityChain.performAction(this, piece))
             return false;
-        }
-        if (piece.getX() + piece.getWidth() - 1 >= this.width || piece.getY() + piece.getHeight() - 1 >= this.height) {
+        if (!this.pieces.add(piece))
             return false;
-        }
-        if (this.collision(piece)) {
-            return false;
-        }
-        boolean added = this.pieces.add(piece);
         this.fireChange();
-        return added;
+        return true;
     }
 
     /**
@@ -143,9 +182,7 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
                 return false;
             }
         } else {
-            this.pieces.remove(pieceToTurn);
-            if (!this.addPiece(pieceToTurn)) {
-                this.pieces.add(pieceToTurn);
+            if (!this.actionResponsabilityChain.performAction(this, pieceToTurn)) {
                 pieceToTurn.rotate((plus90Degrees ? Piece.Rotate.MINUS_90_DEGREES : Piece.Rotate.PLUS_90_DEGREES));
                 return false;
             }
@@ -172,9 +209,7 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
                 return false;
             }
         } else {
-            this.pieces.remove(pieceToTranslate);
-            if (!this.addPiece(pieceToTranslate)) {
-                this.pieces.add(pieceToTranslate);
+            if (!this.actionResponsabilityChain.performAction(this, pieceToTranslate)) {
                 pieceToTranslate.translate(-dx, -dy);
                 return false;
             }
@@ -186,5 +221,32 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
     @Override
     public void somethingHasChanged(Object arg0) {
         this.fireChange();
+    }
+
+    /**
+     * Calcule le score de l'état actuel du plateau.
+     * 
+     * @return score du plateau
+     */
+    public int calculateScore() {
+        int minX = this.width;
+        int minY = this.height;
+        int maxX = 0;
+        int maxY = 0;
+        for (Piece piece : this.pieces) {
+            if (piece.getX() < minX) {
+                minX = piece.getX();
+            }
+            if (piece.getX() + piece.getWidth() > maxX) {
+                maxX = piece.getX() + piece.getWidth();
+            }
+            if (piece.getY() < minY) {
+                minY = piece.getY();
+            }
+            if (piece.getY() + piece.getHeight() > maxY) {
+                maxY = piece.getY() + piece.getHeight();
+            }
+        }
+        return (maxX - minX) * (maxY - minY);
     }
 }

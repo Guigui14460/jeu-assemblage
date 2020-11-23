@@ -51,4 +51,19 @@ public class TestPlateauPuzzle extends TestCase {
         assertFalse(board.translatePiece(p1, -10, 2));
         assertTrue(board.translatePiece(p1, 3, 4));
     }
+
+    @Test
+    public void testCalculateScore() {
+        PlateauPuzzle board = new PlateauPuzzle(WIDTH, HEIGHT);
+        RectanglePiece p1 = new RectanglePiece(1, 1, 2, 3);
+        RectanglePiece p2 = new RectanglePiece(6, 2, 1, 3);
+        RectanglePiece p3 = new RectanglePiece(5, 4, 1, 6);
+        board.addPiece(p1);
+        board.addPiece(p2);
+        board.addPiece(p3);
+        board.rotatePiece(p2, Rotate.PLUS_90_DEGREES);
+        board.translatePiece(p3, -1, 0);
+        board.rotatePiece(p3, Rotate.PLUS_90_DEGREES);
+        assertEquals(36, board.calculateScore());
+    }
 }
