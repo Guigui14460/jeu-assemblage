@@ -4,6 +4,8 @@ package piecesPuzzle;
  * Classe définissant une pièce en forme de L.
  */
 public class LPiece extends PieceImplementation {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Constructeur définissant tous les attributs.
      * 

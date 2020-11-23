@@ -1,11 +1,13 @@
 package piecesPuzzle;
 
+import java.io.Serializable;
+
 import piecesPuzzle.observer.ListenableModel;
 
 /**
  * Interface décrivant les caractéristiques d'une pièce.
  */
-public interface Piece extends ListenableModel {
+public interface Piece extends ListenableModel, Serializable {
     /**
      * Énumérateur permettant de définir les angles dans lesquels les pièces peuvent
      * tourner.

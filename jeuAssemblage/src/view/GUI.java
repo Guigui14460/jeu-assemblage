@@ -28,6 +28,7 @@ public class GUI extends JFrame {
         contentPane.setLayout(new BorderLayout());
         contentPane.add(boardView, BorderLayout.CENTER);
         contentPane.add(new PiecesTable(board, boardView), BorderLayout.SOUTH);
+        contentPane.add(new ControlPartView(board, 24, "FirstPlayer"), BorderLayout.EAST);
 
         this.pack();
         this.setVisible(true);

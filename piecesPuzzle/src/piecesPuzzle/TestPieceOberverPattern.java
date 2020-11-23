@@ -1,6 +1,5 @@
 package piecesPuzzle;
 
-import piecesPuzzle.observer.ListenableModel;
 import piecesPuzzle.observer.ModelListener;
 
 import org.junit.After;

@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,9 @@ import piecesPuzzle.observer.ModelListener;
 /**
  * Classe représentant le plateau d'un jeu de pièce.
  */
-public class PlateauPuzzle extends AbstractListenableModel implements ModelListener {
+public class PlateauPuzzle extends AbstractListenableModel implements ModelListener, Serializable {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Liste contenant les pièces.
      */

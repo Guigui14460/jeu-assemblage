@@ -1,6 +1,5 @@
 package piecesPuzzle;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertThrows;
 
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
 
@@ -79,7 +77,6 @@ public class TestPiece extends TestCase {
 
     @Test
     public void testSetBoardValueAtPosition() {
-        Random random = new Random();
         for (int i = 0; i < NUMBER_OF_PIECES; i++) {
             Piece piece = PIECES.get(i);
             for (int j = -MAX_WIDTH; j <= MAX_WIDTH; j++) {

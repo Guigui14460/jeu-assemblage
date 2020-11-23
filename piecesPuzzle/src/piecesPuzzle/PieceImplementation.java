@@ -7,6 +7,8 @@ import piecesPuzzle.observer.AbstractListenableModel;
  * n'importe quel jeu de puzzle.
  */
 public abstract class PieceImplementation extends AbstractListenableModel implements Piece {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Coordonnées et dimensions de la pièce.
      */
