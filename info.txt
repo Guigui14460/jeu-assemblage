@@ -1,10 +1,5 @@
 Créer différentes dispositions de pièces (pattern Strategy).
 Pattern Strategy pour pouvoir intégrer différentes intelligences artificielles (brute-force, Alphabeta, Random, etc)
 
-Question : Comment faire pour faire différentes dispositions de pièces ?
-           Dispositions scriptées, dispositions aléatoires ?
-
-Question sur l'IA ou les IAs à implémenter : 
-Pour les IA à implémenter, peut-on simplement faire de l'aléatoire ou 
-faut-il réellement en implémenter une comme un Négamax ou A* ou encore 
-qqch d'autre de plus approprié pour le problème ?
+Ajouter un bouton sur le côté pour lancer la calcul du score
+Ajouter un espace sur le côté pour load une ancienne config et le meilleur score associé à cette config

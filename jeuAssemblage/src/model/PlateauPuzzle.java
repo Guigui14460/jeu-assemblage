@@ -118,6 +118,13 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
     }
 
     /**
+     * Met à jour le plateau.
+     */
+    public void update() {
+        this.fireChange();
+    }
+
+    /**
      * Permet d'ajouter une pièce à la liste en vérifiant si elle peut être placée.
      * 
      * @param piece pièce à ajouter

@@ -226,9 +226,9 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
                     this.selectedPiece.rotate(Piece.Rotate.MINUS_90_DEGREES);
                 }
             }
-
             // on remet toutes les variables de sélection à des valeurs nulles
             this.setSelectedPiece(null);
+            this.board.update();
         }
     }
 
