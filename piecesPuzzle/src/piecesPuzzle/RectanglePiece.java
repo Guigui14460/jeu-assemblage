@@ -4,6 +4,8 @@ package piecesPuzzle;
  * Classe définissant une pièce rectangulaire.
  */
 public class RectanglePiece extends PieceImplementation {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Constructeur définissant tous les attributs.
      * 

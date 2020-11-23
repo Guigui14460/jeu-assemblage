@@ -7,6 +7,8 @@ import piecesPuzzle.Piece;
  * en fonction des coordonnées et dimensions.
  */
 public class InBoardChain extends Chain {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Constructeur par défaut.
      * 

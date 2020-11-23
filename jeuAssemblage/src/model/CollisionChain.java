@@ -7,6 +7,8 @@ import piecesPuzzle.Piece;
  * avec une autre pièce d'un plateau donné.
  */
 public class CollisionChain extends Chain {
+    private static final long serialVersionUID = 1L;
+
     /**
      * Constructeur par défaut.
      * 

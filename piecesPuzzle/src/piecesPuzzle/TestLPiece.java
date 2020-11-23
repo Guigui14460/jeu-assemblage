@@ -1,7 +1,6 @@
 package piecesPuzzle;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertThrows;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +9,6 @@ import java.util.Map;
 import java.util.Random;
 
 import org.junit.Test;
-import org.junit.function.ThrowingRunnable;
 
 import junit.framework.TestCase;
 
