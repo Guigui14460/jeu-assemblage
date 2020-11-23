@@ -1,9 +1,6 @@
 Créer différentes dispositions de pièces (pattern Strategy).
 Pattern Strategy pour pouvoir intégrer différentes intelligences artificielles (brute-force, Alphabeta, Random, etc)
 
-Test fonctionnel pour ajouter des éléments dans une liste statique (pour optimiser les pièces comme proposer dans le TP6)
-
-
 Question : Comment faire pour faire différentes dispositions de pièces ?
            Dispositions scriptées, dispositions aléatoires ?
 

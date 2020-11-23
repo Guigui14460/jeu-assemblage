@@ -150,7 +150,7 @@ public class TestPiece extends TestCase {
                 for (int k = -MAX_HEIGHT; k <= MAX_HEIGHT; k++) {
                     int x = j, y = k;
                     if (x < X || x >= DIMENSIONS.get(i).get(0) + X || y < Y || y >= DIMENSIONS.get(i).get(1) + Y) {
-                        assertEquals(false, piece.occupiesInBoard(x, y));
+                        assertFalse(piece.occupiesInBoard(x, y));
                     } else {
                         assertEquals(piece.getBoard()[y - Y][x - X], piece.occupiesInBoard(x, y));
                     }
