@@ -71,6 +71,12 @@ public class RandomPieceFactory implements PieceAbstractFactory {
         Class<?> pieceClassChosen = RandomPieceFactory.pieceClasses
                 .get(RandomPieceFactory.random.nextInt(RandomPieceFactory.pieceClasses.size()));
         if (this.width != -1) { // si on veut une pièce paramétrée
+            if (width == 0) {
+                width = 1;
+            }
+            if (height == 0) {
+                height = 1;
+            }
             if (TPiece.class.equals(pieceClassChosen)) {
                 // changements pour éviter les exceptions pour la pièce en T
                 if (this.width < 3) {

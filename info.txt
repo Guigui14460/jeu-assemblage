@@ -1,5 +1,2 @@
 Créer différentes dispositions de pièces (pattern Strategy).
 Pattern Strategy pour pouvoir intégrer différentes intelligences artificielles (brute-force, Alphabeta, Random, etc)
-
-Faire système sauvegarde de la config initiale, du meilleur score et du joueur associé à ce score.
-Faire système de loading.
