@@ -1,11 +1,5 @@
 package view;
 
-import javax.swing.JPanel;
-
-import model.PlateauPuzzle;
-import piecesPuzzle.Piece;
-import piecesPuzzle.observer.ModelListener;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -14,8 +8,13 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
-import java.util.List;
+
+import javax.swing.JPanel;
+
+import model.PlateauPuzzle;
+import piecesPuzzle.Piece;
+import piecesPuzzle.observer.ModelListener;
+import settings.Settings;
 
 /**
  * Classe représentant un panel où les pièces et les cases sont affichées via
@@ -23,41 +22,6 @@ import java.util.List;
  */
 public class GraphicsPanel extends JPanel implements ModelListener, KeyListener, MouseListener, MouseMotionListener {
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Taille de chaque case en pixels.
-     */
-    public static final int BOX_SIZE = 40;
-
-    /**
-     * Liste de couleurs pour les pièces.
-     */
-    private static final List<Color> PIECE_COLORS = new ArrayList<>(6);
-
-    /**
-     * Liste de couleurs pour les pièces sélectionnées.
-     */
-    private static final List<Color> SELECTED_PIECE_COLORS = new ArrayList<>(6);
-    static {
-        PIECE_COLORS.add(new Color(45, 23, 235)); // bleu foncé
-        PIECE_COLORS.add(new Color(224, 199, 34)); // jaune
-        PIECE_COLORS.add(new Color(232, 14, 203)); // rose
-        PIECE_COLORS.add(new Color(14, 196, 232)); // bleu clair
-        PIECE_COLORS.add(new Color(230, 117, 25)); // orange
-        PIECE_COLORS.add(new Color(141, 9, 230)); // violet
-
-        SELECTED_PIECE_COLORS.add(new Color(45, 23, 235, 127)); // bleu foncé
-        SELECTED_PIECE_COLORS.add(new Color(224, 199, 34, 127)); // jaune
-        SELECTED_PIECE_COLORS.add(new Color(232, 14, 203, 127)); // rose
-        SELECTED_PIECE_COLORS.add(new Color(14, 196, 232, 127)); // bleu clair
-        SELECTED_PIECE_COLORS.add(new Color(230, 117, 25, 127)); // orange
-        SELECTED_PIECE_COLORS.add(new Color(141, 9, 230, 127)); // violet
-    }
-
-    /**
-     * Couleur de pièce à afficher en cas d'erreur.
-     */
-    private static final Color INVALID_POSITION_COLOR = new Color(224, 31, 31, 191);
 
     /**
      * Plateau de jeu.
@@ -92,7 +56,8 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
     public GraphicsPanel(PlateauPuzzle board) {
         this.board = board;
         this.board.addModelListener(this);
-        this.setPreferredSize(new Dimension(this.board.getWidth() * BOX_SIZE, this.board.getHeight() * BOX_SIZE));
+        this.setPreferredSize(
+                new Dimension(this.board.getWidth() * Settings.BOX_SIZE, this.board.getHeight() * Settings.BOX_SIZE));
         this.setBackground(Color.WHITE);
         this.setForeground(Color.BLACK);
         // listeners pour interagir
@@ -148,22 +113,23 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
         g.setColor(Color.WHITE);
         for (int i = 0; i < this.board.getWidth(); i++) {
             for (int j = 0; j < this.board.getHeight(); j++) {
-                g.fillRect(i * BOX_SIZE + 1, j * BOX_SIZE + 1, BOX_SIZE - 2, BOX_SIZE - 2);
+                g.fillRect(i * Settings.BOX_SIZE + 1, j * Settings.BOX_SIZE + 1, Settings.BOX_SIZE - 2,
+                        Settings.BOX_SIZE - 2);
             }
         }
 
         // permet de dessiner les pièces
-        int colorListSize = PIECE_COLORS.size();
+        int colorListSize = Settings.PIECE_COLORS.size();
         for (int i = 0; i < this.board.getNumberOfPiece(); i++) {
             Piece piece = this.board.getPiece(i);
             if (piece.equals(this.selectedPiece)) {
                 if (this.errorPiece) {
-                    g.setColor(INVALID_POSITION_COLOR);
+                    g.setColor(Settings.INVALID_POSITION_COLOR);
                 } else {
-                    g.setColor(SELECTED_PIECE_COLORS.get(i % colorListSize));
+                    g.setColor(Settings.SELECTED_PIECE_COLORS.get(i % colorListSize));
                 }
             } else {
-                g.setColor(PIECE_COLORS.get(i % colorListSize));
+                g.setColor(Settings.PIECE_COLORS.get(i % colorListSize));
             }
 
             boolean[][] pieceBoard = piece.getBoard();
@@ -171,8 +137,9 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
                 for (int x = 0; x < piece.getWidth(); x++) {
                     // on colore seulement les cases de la pièce, pas le tableau complet
                     if (pieceBoard[y][x] == true) {
-                        g.fillRect((piece.getX() + x) * BOX_SIZE + 1, (piece.getY() + y) * BOX_SIZE + 1, BOX_SIZE - 2,
-                                BOX_SIZE - 2);
+                        g.fillRect((piece.getX() + x) * Settings.BOX_SIZE + 1,
+                                (piece.getY() + y) * Settings.BOX_SIZE + 1, Settings.BOX_SIZE - 2,
+                                Settings.BOX_SIZE - 2);
                     }
                 }
             }
@@ -185,14 +152,26 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
     }
 
     @Override
+    public void setEnabled(boolean enabled) {
+        if (!enabled) {
+            this.setFocusable(false);
+            this.removeKeyListener(this);
+            this.removeMouseListener(this);
+            this.removeMouseMotionListener(this);
+            this.board.removeModelListener(this);
+        }
+        super.setEnabled(enabled);
+    }
+
+    @Override
     public void mouseDragged(MouseEvent arg0) {
     }
 
     @Override
     public void mouseMoved(MouseEvent arg0) {
         if (this.selectedPiece != null) {
-            int dx = arg0.getX() / BOX_SIZE - this.selectedPiece.getX();
-            int dy = arg0.getY() / BOX_SIZE - this.selectedPiece.getY();
+            int dx = arg0.getX() / Settings.BOX_SIZE - this.selectedPiece.getX();
+            int dy = arg0.getY() / Settings.BOX_SIZE - this.selectedPiece.getY();
             this.selectedPiece.translate(dx, dy); // on la bouge pour que ça l'update à l'écran
             // permet de savoir s'il y a un problème avec les nouvelles coordonnées de la
             // pièce
@@ -203,8 +182,8 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
 
     @Override
     public void mouseClicked(MouseEvent arg0) {
-        int newX = arg0.getX() / BOX_SIZE;
-        int newY = arg0.getY() / BOX_SIZE;
+        int newX = arg0.getX() / Settings.BOX_SIZE;
+        int newY = arg0.getY() / Settings.BOX_SIZE;
         if (this.selectedPiece == null) {
             for (int i = 0; i < this.board.getNumberOfPiece(); i++) {
                 Piece piece = this.board.getPiece(i);
