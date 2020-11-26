@@ -5,24 +5,20 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileSystemView;
 
 import model.PlateauPuzzle;
+import model.PlateauPuzzleIO;
 import settings.Settings;
 
 /**
@@ -30,11 +26,6 @@ import settings.Settings;
  */
 public class ControlPartView extends JPanel {
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Fichier temporaire où l'on sauvegarde le plateau.
-     */
-    private File tmpConfigFile;
 
     /**
      * Record de la configuration du plateau. Vaut {@code -1} si c'est une nouvelle
@@ -53,6 +44,12 @@ public class ControlPartView extends JPanel {
      * configuration.
      */
     private File oldFileConfig;
+
+    /**
+     * Instance permettant d'écrire ou lire dans un fichier spécialement pour une
+     * instance de {@link PlateauPuzzle}.
+     */
+    private PlateauPuzzleIO boardIO;
 
     /**
      * Constructeur. Créer un panneau avec une ancienne configuration sauvegardée
@@ -75,9 +72,8 @@ public class ControlPartView extends JPanel {
         this.bestScore = bestScore;
         this.bestPlayer = bestPlayer;
         this.oldFileConfig = oldFileConfig;
-        this.tmpConfigFile = File.createTempFile("tmpBoard", null);
         this.createElements(gui, boardView, board, bestScore, bestPlayer);
-        this.saveBoardInTmpFile(board);
+        this.boardIO = PlateauPuzzleIO.saveBoardInTmpFile(board);
     }
 
     /**
@@ -120,10 +116,11 @@ public class ControlPartView extends JPanel {
         scoreButton.setHorizontalAlignment(SwingConstants.CENTER);
         scoreButton.setToolTipText("Entrez un nom d'utilisateur pour activer ce bouton");
         scoreButton.setEnabled(false);
-        JTextField usernameTextField = new JTextField("Username");
+        PlaceholderTextField playerNameTextField = new PlaceholderTextField();
+        playerNameTextField.setPlaceholder("Entrez un nom de joueur");
 
         // on leur met des listeners pour pouvoir les contrôler
-        usernameTextField.getDocument().addDocumentListener(new DocumentListener() {
+        playerNameTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent arg0) {
             }
@@ -143,7 +140,7 @@ public class ControlPartView extends JPanel {
             public void actionPerformed(ActionEvent arg0) {
                 int score = board.calculateScore();
                 scoreLabel.setText("<html>Score actuel : " + score + "</html>");
-                if (saveScore(score, usernameTextField.getText())) {
+                if (saveScore(score, playerNameTextField.getText())) {
                     scoreLabel.setForeground(Color.GREEN);
                     saveConfig.setEnabled(true);
                 } else {
@@ -173,14 +170,14 @@ public class ControlPartView extends JPanel {
                 }
                 if (file != null) {
                     try {
-                        saveConfigInFile(file);
+                        boardIO.saveConfigInFile(file, bestScore, bestPlayer);
                         remove(saveConfig);
                         remove(scoreButton);
                         JOptionPane.showMessageDialog(gui,
                                 "La sauvegarde de votre partie s'est déroulée sans accroc :)", "Sauvegarde réussie",
                                 JOptionPane.INFORMATION_MESSAGE);
                         gui.dispose();
-                    } catch (IOException e) {
+                    } catch (IOException | ClassNotFoundException e) {
                         JOptionPane.showMessageDialog(gui,
                                 "Une erreur est intervenue lors de la sauvegarde de votre partie :/",
                                 "Erreur sauvegarde", JOptionPane.ERROR_MESSAGE);
@@ -191,7 +188,7 @@ public class ControlPartView extends JPanel {
 
         this.add(bestScoreLabel);
         this.add(scoreLabel);
-        this.add(usernameTextField);
+        this.add(playerNameTextField);
         this.add(saveConfig);
         this.add(scoreButton);
     }
@@ -210,51 +207,5 @@ public class ControlPartView extends JPanel {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Enregistre la configuration dans un fichier donné.
-     * 
-     * @param file fichier où sauvegarder
-     * @throws IOException levée lorsque l'on ne peut pas écrire dans ce fichier
-     */
-    private void saveConfigInFile(File file) throws IOException {
-        ObjectOutputStream oos = null;
-        try {
-            oos = new ObjectOutputStream(new FileOutputStream(file));
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.tmpConfigFile));
-            oos.writeObject(ois.readObject());
-            ois.close();
-            oos.writeObject(this.bestScore);
-            oos.writeObject(this.bestPlayer);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (oos != null) {
-                oos.close();
-            }
-        }
-        this.tmpConfigFile.deleteOnExit();
-    }
-
-    /**
-     * Enregistre le plateau de jeu dans un fichier temporaire. Permet de garder la
-     * configuration initiale telle qu'elle était lors de sa première génération.
-     * 
-     * @param board plateau de jeu
-     * @throws IOException levée lorsque l'on ne peut pas écrire dans ce fichier
-     */
-    private void saveBoardInTmpFile(PlateauPuzzle board) throws IOException {
-        ObjectOutputStream oos = null;
-        try {
-            oos = new ObjectOutputStream(new FileOutputStream(this.tmpConfigFile));
-            oos.writeObject(board);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (oos != null) {
-                oos.close();
-            }
-        }
     }
 }

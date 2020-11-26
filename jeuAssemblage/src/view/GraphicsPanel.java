@@ -12,7 +12,9 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
 
 import model.PlateauPuzzle;
+import model.chains.InBoardChain;
 import piecesPuzzle.Piece;
+import piecesPuzzle.RectanglePiece;
 import piecesPuzzle.observer.ModelListener;
 import settings.Settings;
 
@@ -137,9 +139,14 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
                 for (int x = 0; x < piece.getWidth(); x++) {
                     // on colore seulement les cases de la pièce, pas le tableau complet
                     if (pieceBoard[y][x] == true) {
-                        g.fillRect((piece.getX() + x) * Settings.BOX_SIZE + 1,
-                                (piece.getY() + y) * Settings.BOX_SIZE + 1, Settings.BOX_SIZE - 2,
-                                Settings.BOX_SIZE - 2);
+                        int nextX = piece.getX() + x;
+                        int nextY = piece.getY() + y;
+                        // ne colorie seulement les cases se trouvant sur le plateau, et pas les cases
+                        // qui dépassent de celui-ci
+                        if (new InBoardChain(null).performAction(board, new RectanglePiece(nextX, nextY, 1, 1))) {
+                            g.fillRect((nextX) * Settings.BOX_SIZE + 1, (nextY) * Settings.BOX_SIZE + 1,
+                                    Settings.BOX_SIZE - 2, Settings.BOX_SIZE - 2);
+                        }
                     }
                 }
             }

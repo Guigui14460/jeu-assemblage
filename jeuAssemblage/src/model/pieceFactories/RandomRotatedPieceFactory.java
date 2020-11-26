@@ -1,4 +1,4 @@
-package model;
+package model.pieceFactories;
 
 import piecesPuzzle.Piece;
 
@@ -35,7 +35,7 @@ public class RandomRotatedPieceFactory extends RandomPieceFactory {
      * @param maxHeight hauteur maximum
      */
     public RandomRotatedPieceFactory(int maxX, int maxY, int maxWidth, int maxHeight) {
-        this(maxX, maxY, maxWidth, maxHeight, 3);
+        this(maxX, maxY, maxWidth, maxHeight, 4);
     }
 
     /**
@@ -57,7 +57,7 @@ public class RandomRotatedPieceFactory extends RandomPieceFactory {
      * @param maxY max Y
      */
     public RandomRotatedPieceFactory(int maxX, int maxY) {
-        this(maxX, maxY, 3);
+        this(maxX, maxY, 4);
     }
 
     @Override

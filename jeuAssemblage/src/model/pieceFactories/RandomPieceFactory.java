@@ -1,4 +1,4 @@
-package model;
+package model.pieceFactories;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;

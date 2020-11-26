@@ -1,5 +1,6 @@
-package model;
+package model.chains;
 
+import model.PlateauPuzzle;
 import piecesPuzzle.Piece;
 
 /**

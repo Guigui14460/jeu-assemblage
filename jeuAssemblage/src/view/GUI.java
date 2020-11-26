@@ -3,20 +3,19 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.Random;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileSystemView;
 
-import model.PieceFactory;
 import model.PlateauPuzzle;
-import model.RandomRotatedPieceFactory;
+import model.PlateauPuzzleIO;
+import model.arrangements.DefaultPieceArrangement;
+import model.arrangements.PieceArrangement;
+import model.arrangements.PlateauPuzzleFactory;
 import settings.Settings;
 
 /**
@@ -26,16 +25,33 @@ public class GUI extends JFrame {
     private static final long serialVersionUID = 1L;
 
     /**
+     * Arrangement de pièces pour la génération du plateau.
+     */
+    private PieceArrangement arrangement;
+
+    /**
+     * Constructeur.
+     * 
+     * @param arrangement arrangement de pièces pour la génération du plateau
+     * @throws IOException levée lorsque l'on n'arrive pas à lire ou écrire dans les
+     *                     fichiers
+     */
+    public GUI(PieceArrangement arrangement) throws IOException {
+        super("Jeu assemblage de pièces");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLayout(new BorderLayout());
+        this.arrangement = arrangement;
+        this.homeView();
+    }
+
+    /**
      * Constructeur par défaut.
      * 
      * @throws IOException levée lorsque l'on n'arrive pas à lire ou écrire dans les
      *                     fichiers
      */
     public GUI() throws IOException {
-        super("Jeu assemblage de pièces");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLayout(new BorderLayout());
-        this.homeView();
+        this(null);
     }
 
     /**
@@ -66,13 +82,17 @@ public class GUI extends JFrame {
                 } catch (FileNotFoundException e) {
                     JOptionPane.showMessageDialog(this, "Le fichier choisi n'existe pas ou plus.", "Fichier non trouvé",
                             JOptionPane.ERROR_MESSAGE);
+                    this.dispose();
                 } catch (ClassNotFoundException | IOException e) {
                     JOptionPane.showMessageDialog(this, "Une erreur est intervenue lors du chargement de votre partie.",
                             "Erreur chargement", JOptionPane.ERROR_MESSAGE);
+                    this.dispose();
                 }
+            } else {
+                this.dispose();
             }
         } else if (n == 1) {
-            createNewConfig();
+            this.createNewConfig();
         } else {
             this.dispose();
         }
@@ -82,16 +102,10 @@ public class GUI extends JFrame {
      * Créer une nouvelle configuration de plateau.
      */
     private void createNewConfig() {
-        Random random = new Random();
-        PlateauPuzzle board = new PlateauPuzzle(random.nextInt(6) + 6, random.nextInt(6) + 6);
-        for (int i = 0; i < 6; i++) {
-            try {
-                board.addPiece(PieceFactory.getPiece(new RandomRotatedPieceFactory(10, 10, 5, 5, 3)));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (this.arrangement == null) {
+            this.arrangement = new DefaultPieceArrangement();
         }
-        this.gameView(board, -1, null, null);
+        this.gameView(PlateauPuzzleFactory.getPlateauPuzzle(this.arrangement), -1, null, null);
     }
 
     /**
@@ -105,12 +119,8 @@ public class GUI extends JFrame {
      *                                d'où proviennent les objets sauvegardés
      */
     private void loadOldConfig(File file) throws FileNotFoundException, IOException, ClassNotFoundException {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-        PlateauPuzzle board = (PlateauPuzzle) ois.readObject();
-        int score = (int) ois.readObject();
-        String player = (String) ois.readObject();
-        ois.close();
-        this.gameView(board, score, player, file);
+        PlateauPuzzleIO boardIO = PlateauPuzzleIO.loadOldConfig(file);
+        this.gameView(boardIO.getBoard(), boardIO.getBestScore(), boardIO.getPlayer(), file);
     }
 
     /**
