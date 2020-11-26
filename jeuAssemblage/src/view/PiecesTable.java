@@ -31,5 +31,6 @@ public class PiecesTable extends JTable {
                 }
             }
         });
+        this.setShowHorizontalLines(true);
     }
 }

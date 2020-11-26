@@ -1,11 +1,13 @@
-package model;
+package model.chains;
 
 import java.io.Serializable;
 
+import model.PlateauPuzzle;
 import piecesPuzzle.Piece;
 
 /**
- * Classe représentant un maillon d'une chaîne de responsabilité.
+ * Classe représentant un maillon d'une chaîne de responsabilité pour action
+ * d'une pièce sur un plateau de jeu.
  */
 public abstract class Chain implements Serializable {
     private static final long serialVersionUID = 1L;

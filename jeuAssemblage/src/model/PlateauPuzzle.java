@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.chains.Chain;
+import model.chains.CollisionChain;
+import model.chains.InBoardChain;
 import piecesPuzzle.Piece;
 import piecesPuzzle.observer.AbstractListenableModel;
 import piecesPuzzle.observer.ModelListener;
