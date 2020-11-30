@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -72,7 +74,7 @@ public class ControlPartView extends JPanel {
         this.bestScore = bestScore;
         this.bestPlayer = bestPlayer;
         this.oldFileConfig = oldFileConfig;
-        this.createElements(gui, boardView, board, bestScore, bestPlayer);
+        this.createElements(gui, boardView, board);
         this.boardIO = PlateauPuzzleIO.saveBoardInTmpFile(board);
     }
 
@@ -93,18 +95,14 @@ public class ControlPartView extends JPanel {
      * 
      * Méthode auxiliaire permettant de créer les éléments de ce panel. *
      * 
-     * @param gui        fenêtre principale
-     * @param boardView  panneau où les pièces sont dessinées
-     * 
-     * @param board      plateau de jeu
-     * @param bestScore  meilleur score
-     * @param bestPlayer joueur associé au meilleur score
+     * @param gui       fenêtre principale
+     * @param boardView panneau où les pièces sont dessinées
+     * @param board     plateau de jeu
      */
-    private void createElements(GUI gui, GraphicsPanel boardView, PlateauPuzzle board, int bestScore,
-            String bestPlayer) {
+    private void createElements(GUI gui, GraphicsPanel boardView, PlateauPuzzle board) {
         // on initialise tous les composants
         JLabel bestScoreLabel = new JLabel("<html>Meilleur score : "
-                + (bestScore == -1 ? "Aucun" : (bestScore + "<br>par " + bestPlayer)) + "</html>");
+                + (this.bestScore == -1 ? "Aucun" : (this.bestScore + "<br>par " + this.bestPlayer)) + "</html>");
         bestScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
         JLabel scoreLabel = new JLabel("");
         scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -133,6 +131,22 @@ public class ControlPartView extends JPanel {
             @Override
             public void removeUpdate(DocumentEvent arg0) {
                 scoreButton.setEnabled(arg0.getOffset() != 0);
+            }
+        });
+        playerNameTextField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent arg0) {
+                if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    boardView.requestFocus(); // permet de retourner sur le plateau
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent arg0) {
+            }
+
+            @Override
+            public void keyTyped(KeyEvent arg0) {
             }
         });
         scoreButton.addActionListener(new ActionListener() {

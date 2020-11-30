@@ -8,7 +8,7 @@ import org.junit.Test;
 import junit.framework.TestCase;
 import piecesPuzzle.Piece;
 
-public class TestPieceFactory extends TestCase {
+public class TestPieceFactories extends TestCase {
     private static final int MAX_X = 20, MAX_Y = 20, MAX_WIDTH = 20, MAX_HEIGHT = 20, MAX_ROTATION = 8;
     private static final List<PieceAbstractFactory> ABSTRACT_FACTORIES = new ArrayList<>();
 
