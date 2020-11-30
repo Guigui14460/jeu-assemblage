@@ -26,7 +26,7 @@ public class PiecesTable extends JTable {
             public void valueChanged(ListSelectionEvent arg0) {
                 if (getSelectedRow() != -1) {
                     boardView.setSelectedPiece(board.getPiece(getSelectedRow()));
-                    getSelectionModel().clearSelection();
+                    boardView.requestFocus(); // recentre le focus sur le plateau
                     repaint(); // évite l'erreur où la ligne sélectionnée n'est plus affichée
                 }
             }

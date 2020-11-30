@@ -236,26 +236,22 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
 
     @Override
     public void keyPressed(KeyEvent arg0) {
-    }
-
-    @Override
-    public void keyReleased(KeyEvent arg0) {
-    }
-
-    @Override
-    public void keyTyped(KeyEvent arg0) {
         if (this.selectedPiece != null) {
-            char keyChar = arg0.getKeyChar();
-            if (keyChar == 'a') { // tourne la pièce à gauche
-                this.selectedPiece.rotate(Piece.Rotate.MINUS_90_DEGREES);
-                if (this.numberOfPlus90DegreeRotation == 0) {
-                    this.numberOfPlus90DegreeRotation = 3;
-                } else {
-                    this.numberOfPlus90DegreeRotation--;
-                }
-            } else if (keyChar == 'e') { // tourne la pièce à droite
-                this.selectedPiece.rotate(Piece.Rotate.PLUS_90_DEGREES);
-                this.numberOfPlus90DegreeRotation++;
+            switch (arg0.getKeyCode()) {
+                case KeyEvent.VK_A: // tourne la pièce à gauche
+                    this.selectedPiece.rotate(Piece.Rotate.MINUS_90_DEGREES);
+                    if (this.numberOfPlus90DegreeRotation == 0) {
+                        this.numberOfPlus90DegreeRotation = 3;
+                    } else {
+                        this.numberOfPlus90DegreeRotation--;
+                    }
+                    break;
+
+                case KeyEvent.VK_E: // tourne la pièce à droite
+                    this.selectedPiece.rotate(Piece.Rotate.PLUS_90_DEGREES);
+                    this.numberOfPlus90DegreeRotation++;
+                default:
+                    break;
             }
 
             // permet de ne pas avoir de problème pour les calculs ou les rotations
@@ -267,5 +263,13 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
             this.errorPiece = !this.board.getActionResponsabilityChain().performAction(this.board, this.selectedPiece);
             this.repaint(); // on update le panel
         }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent arg0) {
+    }
+
+    @Override
+    public void keyTyped(KeyEvent arg0) {
     }
 }
