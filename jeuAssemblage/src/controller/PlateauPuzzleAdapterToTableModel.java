@@ -29,7 +29,7 @@ public class PlateauPuzzleAdapterToTableModel extends AbstractTableModel impleme
     static {
         COL_NAME = new String[NB_FIELDS];
         COL_NAME[PIECE_TYPE] = "Type";
-        COL_NAME[PIECE_COORDINATES] = "Coordinates";
+        COL_NAME[PIECE_COORDINATES] = "Coordonnées";
         COL_NAME[PIECE_DIMENSIONS] = "Dimensions";
     }
 

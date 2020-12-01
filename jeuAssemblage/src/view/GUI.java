@@ -105,7 +105,7 @@ public class GUI extends JFrame {
         if (this.arrangement == null) {
             this.arrangement = new DefaultPieceArrangement();
         }
-        this.gameView(PlateauPuzzleFactory.getPlateauPuzzle(this.arrangement), -1, null, -1, null);
+        this.gameView(PlateauPuzzleFactory.generatePlateauPuzzle(this.arrangement), -1, null, -1, null);
     }
 
     /**
