@@ -200,21 +200,47 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
                 }
             }
         } else {
-            if (this.errorPiece) {
-                this.selectedPiece.translate(this.initialXSelectedPiece - newX, this.initialYSelectedPiece - newY); // on
-                                                                                                                    // la
-                                                                                                                    // remet
-                                                                                                                    // à
-                                                                                                                    // sa
-                                                                                                                    // place
-                                                                                                                    // initiale
-                for (int i = 0; i < this.numberOfPlus90DegreeRotation; i++) {
-                    this.selectedPiece.rotate(Piece.Rotate.MINUS_90_DEGREES);
+            if (this.errorPiece) { // en cas d'erreur, on remet la pièce comme avant
+                this.cancelSelection();
+            } else {
+                int usedActions = 0;
+                if (this.initialXSelectedPiece != newX || this.initialYSelectedPiece != newY) { // si la pièce à été
+                                                                                                // déplacée en X et/ou
+                                                                                                // en Y
+                    usedActions++; // équivaut à une action
+                }
+                switch (this.numberOfPlus90DegreeRotation) {
+                    case 0: // on tourne pas
+                        break;
+                    case 2:
+                        usedActions += 2; // 2 actions pour tourner la pièce à 180°
+                        break;
+
+                    default:
+                        usedActions++; // 1 action pour tourner à +-90° ou +-270° (optimisation des coups)
+                        break;
+                }
+                if (!this.board.useAction(usedActions)) { // si on ne peut pas réaliser les actions, on annule
+                    this.cancelSelection();
                 }
             }
             // on remet toutes les variables de sélection à des valeurs nulles
             this.setSelectedPiece(null);
+            if (this.board.isFinished()) {
+                this.setEnabled(false);
+            }
             this.board.update();
+        }
+    }
+
+    /**
+     * Permet de retourner à l'état initial de la pièce sélectionnée.
+     */
+    public void cancelSelection() {
+        this.selectedPiece.translate(this.initialXSelectedPiece - this.selectedPiece.getX(),
+                this.initialYSelectedPiece - this.selectedPiece.getY()); // on la remet à sa place initiale
+        for (int i = 0; i < this.numberOfPlus90DegreeRotation; i++) { // on remet la pièce à sa rotation initale
+            this.selectedPiece.rotate(Piece.Rotate.MINUS_90_DEGREES);
         }
     }
 
@@ -250,18 +276,26 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
                 case KeyEvent.VK_E: // tourne la pièce à droite
                     this.selectedPiece.rotate(Piece.Rotate.PLUS_90_DEGREES);
                     this.numberOfPlus90DegreeRotation++;
+                    break;
+
+                case KeyEvent.VK_ESCAPE: // on annule le déplacement
+                    this.cancelSelection();
+                    this.setSelectedPiece(null);
+                    break;
                 default:
                     break;
             }
-
-            // permet de ne pas avoir de problème pour les calculs ou les rotations
-            if (numberOfPlus90DegreeRotation == 4) {
-                this.numberOfPlus90DegreeRotation = 0;
+            if (this.selectedPiece != null) { // handle le fait de pouvoir lacher la pièce avec la touche 'Echap'
+                // permet de ne pas avoir de problème pour les calculs ou les rotations
+                if (numberOfPlus90DegreeRotation == 4) {
+                    this.numberOfPlus90DegreeRotation = 0;
+                }
+                // permet de savoir s'il y a un problème avec les nouvelles coordonnées de la
+                // pièce
+                this.errorPiece = !this.board.getActionResponsabilityChain().performAction(this.board,
+                        this.selectedPiece);
+                this.repaint(); // on update le panel
             }
-            // permet de savoir s'il y a un problème avec les nouvelles coordonnées de la
-            // pièce
-            this.errorPiece = !this.board.getActionResponsabilityChain().performAction(this.board, this.selectedPiece);
-            this.repaint(); // on update le panel
         }
     }
 

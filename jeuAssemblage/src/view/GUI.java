@@ -105,7 +105,7 @@ public class GUI extends JFrame {
         if (this.arrangement == null) {
             this.arrangement = new DefaultPieceArrangement();
         }
-        this.gameView(PlateauPuzzleFactory.getPlateauPuzzle(this.arrangement), -1, null, null);
+        this.gameView(PlateauPuzzleFactory.getPlateauPuzzle(this.arrangement), -1, null, -1, null);
     }
 
     /**
@@ -120,25 +120,28 @@ public class GUI extends JFrame {
      */
     private void loadOldConfig(File file) throws FileNotFoundException, IOException, ClassNotFoundException {
         PlateauPuzzleIO boardIO = PlateauPuzzleIO.loadOldConfig(file);
-        this.gameView(boardIO.getBoard(), boardIO.getBestScore(), boardIO.getPlayer(), file);
+        this.gameView(boardIO.getBoard(), boardIO.getBestScore(), boardIO.getPlayer(), boardIO.getNumberActions(),
+                file);
     }
 
     /**
      * Remplace les éléments de la fenêtre principale.
      * 
-     * @param board  plateau de jeu
-     * @param score  meilleur score
-     * @param player meilleur joueur
-     * @param file   fichier d'où les informations proviennent
+     * @param board                plateau de jeu
+     * @param score                meilleur score
+     * @param player               meilleur joueur
+     * @param nbActionsOfBestScore nombre d'actions associé au score
+     * @param file                 fichier d'où les informations proviennent
      */
-    private void gameView(PlateauPuzzle board, int score, String player, File file) {
+    private void gameView(PlateauPuzzle board, int score, String player, int nbActionsOfBestScore, File file) {
         try {
             GraphicsPanel boardView = new GraphicsPanel(board);
             Container contentPane = this.getContentPane();
             contentPane.removeAll();
             contentPane.add(boardView, BorderLayout.CENTER);
             contentPane.add(new PiecesTable(board, boardView), BorderLayout.SOUTH);
-            contentPane.add(new ControlPartView(this, boardView, board, score, player, file), BorderLayout.EAST);
+            contentPane.add(new ControlPartView(this, boardView, board, score, player, nbActionsOfBestScore, file),
+                    BorderLayout.EAST);
         } catch (IOException e) {
             e.printStackTrace();
         }

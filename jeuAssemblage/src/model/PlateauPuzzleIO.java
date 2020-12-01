@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
 import settings.Settings;
 
 /**
@@ -36,16 +35,23 @@ public class PlateauPuzzleIO {
     private File tmpFile;
 
     /**
+     * Nombre d'actions utilisées dans cette partie.
+     */
+    private int numberActions;
+
+    /**
      * Constructeur permettant de rejouer une ancienne configuration sauvegardée.
      * 
-     * @param board     plateau de jeu
-     * @param bestScore meilleur score
-     * @param player    joueur associé au record
+     * @param board         plateau de jeu
+     * @param bestScore     meilleur score
+     * @param player        joueur associé au record
+     * @param numberActions nombre d'actions utilisées dans cette partie
      */
-    private PlateauPuzzleIO(PlateauPuzzle board, int bestScore, String player) {
+    private PlateauPuzzleIO(PlateauPuzzle board, int bestScore, String player, int numberActions) {
         this.board = board;
         this.bestScore = bestScore;
         this.player = player;
+        this.numberActions = numberActions;
     }
 
     /**
@@ -54,7 +60,7 @@ public class PlateauPuzzleIO {
      * @param tmpFile fichier temporaire
      */
     private PlateauPuzzleIO(File tmpFile) {
-        this(null, -1, "");
+        this(null, -1, "", -1);
         this.tmpFile = tmpFile;
     }
 
@@ -76,8 +82,9 @@ public class PlateauPuzzleIO {
         PlateauPuzzle board = (PlateauPuzzle) ois.readObject();
         int score = (int) ois.readObject();
         String player = (String) ois.readObject();
+        int numberActions = (int) ois.readObject();
         ois.close();
-        return new PlateauPuzzleIO(board, score, player);
+        return new PlateauPuzzleIO(board, score, player, numberActions);
     }
 
     /**
@@ -100,16 +107,17 @@ public class PlateauPuzzleIO {
     /**
      * Enregistre la configuration dans un fichier donné.
      * 
-     * @param file   fichier où sauvegarder
-     * @param score  score à sauvegarder
-     * @param player joueur associé au score à sauvegarder
+     * @param file          fichier où sauvegarder
+     * @param score         score à sauvegarder
+     * @param player        joueur associé au score à sauvegarder
+     * @param numberActions nombre d'actions utilisées
      * @throws FileNotFoundException  levée lorsque le fichier recherché n'est pas
      *                                trouvé
      * @throws IOException            levée lorsque qu'il y a une erreur de lecture
      * @throws ClassNotFoundException levée lorsque qu'on ne trouve pas la classe
      *                                d'où proviennent les objets sauvegardés
      */
-    public void saveConfigInFile(File file, int score, String player)
+    public void saveConfigInFile(File file, int score, String player, int numberActions)
             throws FileNotFoundException, IOException, ClassNotFoundException {
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.tmpFile));
@@ -117,6 +125,7 @@ public class PlateauPuzzleIO {
         ois.close();
         oos.writeObject(score);
         oos.writeObject(player);
+        oos.writeObject(numberActions);
         oos.close();
         this.tmpFile.deleteOnExit();
     }
@@ -146,5 +155,14 @@ public class PlateauPuzzleIO {
      */
     public String getPlayer() {
         return this.player;
+    }
+
+    /**
+     * Récupère le nombre d'actions utilisées dans cette partie.
+     * 
+     * @return nombre d'actions utilisées dans cette partie
+     */
+    public int getNumberActions() {
+        return this.numberActions;
     }
 }

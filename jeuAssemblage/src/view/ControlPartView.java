@@ -21,12 +21,13 @@ import javax.swing.filechooser.FileSystemView;
 
 import model.PlateauPuzzle;
 import model.PlateauPuzzleIO;
+import piecesPuzzle.observer.ModelListener;
 import settings.Settings;
 
 /**
  * Classe permettant d'ajouter des contrôles sur l'application.
  */
-public class ControlPartView extends JPanel {
+public class ControlPartView extends JPanel implements ModelListener {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -42,6 +43,11 @@ public class ControlPartView extends JPanel {
     private String bestPlayer;
 
     /**
+     * Nombre de coups utilisés pour le record.
+     */
+    private int nbActionsOfBestScore;
+
+    /**
      * Ancien fichier de configuration. Vaut {@code null} si c'est une nouvelle
      * configuration.
      */
@@ -53,29 +59,36 @@ public class ControlPartView extends JPanel {
      */
     private PlateauPuzzleIO boardIO;
 
+    private JLabel bestScoreLabel, scoreLabel;
+    private JButton saveConfig, scoreButton;
+    private PlaceholderTextField playerNameTextField;
+
     /**
      * Constructeur. Créer un panneau avec une ancienne configuration sauvegardée
      * dans un fichier
      * 
-     * @param gui           fenêtre principale
+     * @param gui                  fenêtre principale
      * 
-     * @param boardView     panneau où les pièces sont dessinées
+     * @param boardView            panneau où les pièces sont dessinées
      * 
-     * @param board         plateau de jeu
-     * @param bestScore     meilleur score
-     * @param bestPlayer    joueur associé au meilleur score
-     * @param oldFileConfig fichier de la configuration utilisée
+     * @param board                plateau de jeu
+     * @param bestScore            meilleur score
+     * @param bestPlayer           joueur associé au meilleur score
+     * @param nbActionsOfBestScore nombre d'actions associées au meilleur score
+     * @param oldFileConfig        fichier de la configuration utilisée
      * @throws IOException levée lorsque l'on n'arrive pas à lire ou écrire dans les
      *                     fichiers
      */
     public ControlPartView(GUI gui, GraphicsPanel boardView, PlateauPuzzle board, int bestScore, String bestPlayer,
-            File oldFileConfig) throws IOException {
+            int nbActionsOfBestScore, File oldFileConfig) throws IOException {
         super(new GridLayout(5, 1, 0, 40));
         this.bestScore = bestScore;
         this.bestPlayer = bestPlayer;
+        this.nbActionsOfBestScore = nbActionsOfBestScore;
         this.oldFileConfig = oldFileConfig;
-        this.createElements(gui, boardView, board);
         this.boardIO = PlateauPuzzleIO.saveBoardInTmpFile(board);
+        board.addModelListener(this);
+        this.createElements(gui, boardView, board);
     }
 
     /**
@@ -88,7 +101,7 @@ public class ControlPartView extends JPanel {
      *                     fichiers
      */
     public ControlPartView(GUI gui, GraphicsPanel boardView, PlateauPuzzle board) throws IOException {
-        this(gui, boardView, board, -1, null, null);
+        this(gui, boardView, board, -1, null, -1, null);
     }
 
     /**
@@ -101,24 +114,26 @@ public class ControlPartView extends JPanel {
      */
     private void createElements(GUI gui, GraphicsPanel boardView, PlateauPuzzle board) {
         // on initialise tous les composants
-        JLabel bestScoreLabel = new JLabel("<html>Meilleur score : "
-                + (this.bestScore == -1 ? "Aucun" : (this.bestScore + "<br>par " + this.bestPlayer)) + "</html>");
-        bestScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        JLabel scoreLabel = new JLabel("");
-        scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        JButton saveConfig = new JButton("<html>Sauvegarder cette<br>configuration</html>");
-        saveConfig.setHorizontalAlignment(SwingConstants.CENTER);
-        saveConfig.setToolTipText("Terminez le jeu pour débloquer ce bouton");
-        saveConfig.setEnabled(false);
-        JButton scoreButton = new JButton("<html>Terminer la partie<br>et regarder le score</html>");
-        scoreButton.setHorizontalAlignment(SwingConstants.CENTER);
-        scoreButton.setToolTipText("Entrez un nom d'utilisateur pour activer ce bouton");
-        scoreButton.setEnabled(false);
-        PlaceholderTextField playerNameTextField = new PlaceholderTextField();
-        playerNameTextField.setPlaceholder("Entrez un nom de joueur");
+        this.bestScoreLabel = new JLabel("<html>Meilleur score : " + (this.bestScore == -1 ? "Aucun"
+                : (this.bestScore + "<br>par " + this.bestPlayer + " en " + this.nbActionsOfBestScore + " coups"))
+                + "</html>");
+        this.bestScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        this.scoreLabel = new JLabel(
+                "<html>Il vous reste " + board.getLeftAvailableActions() + "<br>actions disponibles</html>");
+        this.scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        this.saveConfig = new JButton("<html>Sauvegarder cette<br>configuration</html>");
+        this.saveConfig.setHorizontalAlignment(SwingConstants.CENTER);
+        this.saveConfig.setToolTipText("Terminez le jeu pour débloquer ce bouton");
+        this.saveConfig.setEnabled(false);
+        this.scoreButton = new JButton("<html>Terminer la partie<br>et regarder le score</html>");
+        this.scoreButton.setHorizontalAlignment(SwingConstants.CENTER);
+        this.scoreButton.setToolTipText("Entrez un nom d'utilisateur pour activer ce bouton");
+        this.scoreButton.setEnabled(false);
+        this.playerNameTextField = new PlaceholderTextField();
+        this.playerNameTextField.setPlaceholder("Entrez un nom de joueur");
 
         // on leur met des listeners pour pouvoir les contrôler
-        playerNameTextField.getDocument().addDocumentListener(new DocumentListener() {
+        this.playerNameTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void changedUpdate(DocumentEvent arg0) {
             }
@@ -133,7 +148,7 @@ public class ControlPartView extends JPanel {
                 scoreButton.setEnabled(arg0.getOffset() != 0);
             }
         });
-        playerNameTextField.addKeyListener(new KeyListener() {
+        this.playerNameTextField.addKeyListener(new KeyListener() {
             @Override
             public void keyPressed(KeyEvent arg0) {
                 if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -149,11 +164,12 @@ public class ControlPartView extends JPanel {
             public void keyTyped(KeyEvent arg0) {
             }
         });
-        scoreButton.addActionListener(new ActionListener() {
+        this.scoreButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 int score = board.calculateScore();
-                scoreLabel.setText("<html>Score actuel : " + score + "</html>");
+                scoreLabel.setText("<html>Score actuel : " + score + "<br>en "
+                        + (board.getMaxAvailableActions() - board.getLeftAvailableActions()) + " coups</html>");
                 if (saveScore(score, playerNameTextField.getText())) {
                     scoreLabel.setForeground(Color.GREEN);
                     saveConfig.setEnabled(true);
@@ -164,7 +180,7 @@ public class ControlPartView extends JPanel {
                 boardView.setEnabled(false);
             }
         });
-        saveConfig.addActionListener(new ActionListener() {
+        this.saveConfig.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 File file = oldFileConfig;
@@ -184,7 +200,8 @@ public class ControlPartView extends JPanel {
                 }
                 if (file != null) {
                     try {
-                        boardIO.saveConfigInFile(file, bestScore, bestPlayer);
+                        boardIO.saveConfigInFile(file, bestScore, bestPlayer,
+                                board.getMaxAvailableActions() - board.getLeftAvailableActions());
                         remove(saveConfig);
                         remove(scoreButton);
                         JOptionPane.showMessageDialog(gui,
@@ -200,11 +217,11 @@ public class ControlPartView extends JPanel {
             }
         });
 
-        this.add(bestScoreLabel);
-        this.add(scoreLabel);
-        this.add(playerNameTextField);
-        this.add(saveConfig);
-        this.add(scoreButton);
+        this.add(this.bestScoreLabel);
+        this.add(this.scoreLabel);
+        this.add(this.playerNameTextField);
+        this.add(this.saveConfig);
+        this.add(this.scoreButton);
     }
 
     /**
@@ -221,5 +238,11 @@ public class ControlPartView extends JPanel {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void somethingHasChanged(Object arg0) {
+        scoreLabel.setText("<html>Il vous reste " + ((PlateauPuzzle) arg0).getLeftAvailableActions()
+                + "<br>actions disponibles</html>");
     }
 }

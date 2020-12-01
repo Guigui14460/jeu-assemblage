@@ -33,27 +33,36 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
     private Chain actionResponsabilityChain;
 
     /**
+     * Nombre d'actions possibles restantes et nombre maximal d'actions réalisables.
+     */
+    private int leftAvailableActions, maxAvailableActions;
+
+    /**
      * Constructeur.
      * 
      * @param width                     largeur du plateau
      * @param height                    hauteur du plateau
+     * @param maxAvailableActions       nombre d'actions possibles
      * @param actionResponsabilityChain chaîne de responsabilité pour vérifier
      *                                  l'action du joueur
      */
-    public PlateauPuzzle(int width, int height, Chain actionResponsabilityChain) {
+    public PlateauPuzzle(int width, int height, int maxAvailableActions, Chain actionResponsabilityChain) {
         this.width = width;
         this.height = height;
         this.actionResponsabilityChain = actionResponsabilityChain;
+        this.leftAvailableActions = maxAvailableActions;
+        this.maxAvailableActions = maxAvailableActions;
     }
 
     /**
      * Constructeur par défaut. Initialise la chaîne de responsabilité par défaut.
      * 
-     * @param width  largeur du plateau
-     * @param height hauteur du plateau
+     * @param width               largeur du plateau
+     * @param height              hauteur du plateau
+     * @param maxAvailableActions nombre d'actions possibles
      */
-    public PlateauPuzzle(int width, int height) {
-        this(width, height, new InBoardChain(new CollisionChain(null)));
+    public PlateauPuzzle(int width, int height, int maxAvailableActions) {
+        this(width, height, maxAvailableActions, new InBoardChain(new CollisionChain(null)));
     }
 
     /**
@@ -81,6 +90,24 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
      */
     public Chain getActionResponsabilityChain() {
         return this.actionResponsabilityChain;
+    }
+
+    /**
+     * Récupère le nombre d'actions possibles restantes.
+     * 
+     * @return nombre d'actions possibles restantes
+     */
+    public int getLeftAvailableActions() {
+        return this.leftAvailableActions;
+    }
+
+    /**
+     * Récupère le nombre maximal d'actions réalisables.
+     * 
+     * @return nombre maximal d'actions réalisables
+     */
+    public int getMaxAvailableActions() {
+        return this.maxAvailableActions;
     }
 
     /**
@@ -128,6 +155,29 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
      */
     public void update() {
         this.fireChange();
+    }
+
+    /**
+     * Vérifie que la partie est terminée.
+     * 
+     * @return booléen représentant le fin ou non de la partie
+     */
+    public boolean isFinished() {
+        return this.leftAvailableActions <= 0;
+    }
+
+    /**
+     * Utilise les actions seulement si l'on peut les utiliser.
+     * 
+     * @param numberUsedAction nombre d'actions à retirer
+     * @return si on peut les appliquer ou non
+     */
+    public boolean useAction(int numberUsedAction) {
+        if (this.leftAvailableActions >= numberUsedAction) {
+            this.leftAvailableActions -= numberUsedAction;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -185,6 +235,9 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
      * @return booléen représentant le fait que la rotation a été effectuée ou non
      */
     public boolean rotatePiece(Piece pieceToTurn, Piece.Rotate rotationAngle) {
+        if (this.leftAvailableActions == 0) {
+            return false;
+        }
         boolean toAdd = !this.pieces.contains(pieceToTurn);
         boolean plus90Degrees = rotationAngle.equals(Piece.Rotate.PLUS_90_DEGREES);
 
@@ -201,6 +254,7 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
             }
         }
         this.fireChange();
+        this.leftAvailableActions--;
         return true;
     }
 
@@ -213,6 +267,9 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
      * @return booléen représentant le fait que la rotation a été effectuée ou non
      */
     public boolean translatePiece(Piece pieceToTranslate, int dx, int dy) {
+        if (this.leftAvailableActions == 0) {
+            return false;
+        }
         boolean toAdd = !this.pieces.contains(pieceToTranslate);
 
         pieceToTranslate.translate(dx, dy);
@@ -228,6 +285,7 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
             }
         }
         this.fireChange();
+        this.leftAvailableActions--;
         return true;
     }
 

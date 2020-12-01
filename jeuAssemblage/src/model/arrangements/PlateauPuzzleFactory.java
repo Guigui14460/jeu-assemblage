@@ -16,7 +16,8 @@ public class PlateauPuzzleFactory {
      */
     public static PlateauPuzzle getPlateauPuzzle(PieceArrangement factory) {
         Arrangement arrangement = factory.generateArrangement();
-        PlateauPuzzle board = new PlateauPuzzle(arrangement.getWidth(), arrangement.getHeight());
+        PlateauPuzzle board = new PlateauPuzzle(arrangement.getWidth(), arrangement.getHeight(),
+                arrangement.getMaxAvailableActions());
         for (Piece piece : arrangement.getPieces()) {
             board.addPiece(piece);
         }
