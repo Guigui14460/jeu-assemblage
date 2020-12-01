@@ -102,6 +102,7 @@ public class RandomPieceArrangement implements PieceArrangement {
                 e.printStackTrace();
             }
         }
+        arrangement.setMaxAvailableActions(arrangement.getPieces().size() * 6);
         return arrangement;
     }
 }
