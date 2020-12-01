@@ -29,7 +29,7 @@ public class TestPieceFactories extends TestCase {
                 piece = PieceFactory.getPiece(abstractFactory);
                 assertNotNull(piece);
             } catch (Exception e) {
-                System.out.println(e);
+                System.err.println(e);
             }
         }
     }
