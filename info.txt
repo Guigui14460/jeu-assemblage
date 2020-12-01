@@ -1,8 +1,0 @@
-Faire des tests sur l'interface graphique.
-
-Pattern Strategy pour pouvoir intégrer différentes intelligences artificielles (brute-force, Alphabeta, Random, etc)
-Utiliser Négamax pour l'IA avec élagage https://github.com/Bigmax81/Infection-et-Algorithmes-d-Intelligence-Artificielle/blob/master/optimisation/IA.java
-
-Si on a le temps :
-    - Ajouter nouveau type de pièce (Z, S)
-    - Changer InvertedL vers J

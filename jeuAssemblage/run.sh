@@ -1,1 +1,0 @@
-javac -d build/ -cp lib/*.jar src/*.java && java -cp lib/*.jar:build Main  
