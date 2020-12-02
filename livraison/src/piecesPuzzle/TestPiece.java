@@ -1,6 +1,7 @@
 package piecesPuzzle;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThrows;
 
 import java.util.ArrayList;
@@ -110,12 +111,48 @@ public class TestPiece extends TestCase {
         for (int i = 0; i < NUMBER_OF_PIECES; i++) {
             Piece piece = PIECES.get(i);
             Piece copy = piece.copy();
+            assertNotNull(copy);
+            assertNotEquals(copy, piece);
             assertEquals(piece.getX(), copy.getX());
             assertEquals(piece.getY(), copy.getY());
             assertEquals(piece.getWidth(), copy.getWidth());
             assertEquals(piece.getHeight(), copy.getHeight());
             assertEquals(piece.getPieceType(), copy.getPieceType());
             assertArrayEquals(piece.getBoard(), copy.getBoard());
+        }
+    }
+
+    @Test
+    public void testClone() {
+        for (int i = 0; i < NUMBER_OF_PIECES; i++) {
+            try {
+                Piece piece = PIECES.get(i);
+                boolean verifWidthHeight = !(piece.getWidth() == piece.getHeight());
+                Piece cloned = (Piece) piece.clone();
+                assertNotNull(cloned);
+                assertNotEquals(cloned, piece);
+                assertEquals(piece.getX(), cloned.getX());
+                assertEquals(piece.getY(), cloned.getY());
+                if (verifWidthHeight) {
+                    assertEquals(piece.getWidth(), cloned.getWidth());
+                    assertEquals(piece.getHeight(), cloned.getHeight());
+                }
+                assertEquals(piece.getPieceType(), cloned.getPieceType());
+                assertNotEquals(piece.getBoard(), cloned.getBoard());
+                assertArrayEquals(piece.getBoard(), cloned.getBoard());
+                cloned.translate(2, 2);
+                cloned.rotate(Piece.Rotate.PLUS_90_DEGREES);
+                assertNotEquals(piece.getX(), cloned.getX());
+                assertNotEquals(piece.getY(), cloned.getY());
+                if (verifWidthHeight) {
+                    assertNotEquals(piece.getWidth(), cloned.getWidth());
+                    assertNotEquals(piece.getHeight(), cloned.getHeight());
+                }
+                assertEquals(piece.getPieceType(), cloned.getPieceType());
+                assertNotEquals(piece.getBoard(), cloned.getBoard());
+            } catch (CloneNotSupportedException e) {
+                System.err.println(e);
+            }
         }
     }
 

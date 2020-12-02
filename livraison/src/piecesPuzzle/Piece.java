@@ -7,7 +7,7 @@ import piecesPuzzle.observer.ListenableModel;
 /**
  * Interface décrivant les caractéristiques d'une pièce.
  */
-public interface Piece extends ListenableModel, Serializable {
+public interface Piece extends ListenableModel, Serializable, Cloneable {
     /**
      * Énumérateur permettant de définir les angles dans lesquels les pièces peuvent
      * tourner.
@@ -82,11 +82,22 @@ public interface Piece extends ListenableModel, Serializable {
     public void setBoardValueAtPosition(int x, int y, boolean value) throws IllegalArgumentException;
 
     /**
-     * Copie la pièce dans une autre instance.
+     * Copie la pièce dans une autre instance en ne gardant pas les écouteurs.
      * 
-     * @return nouvelle instance de la même pièce
+     * @return pièce copiée
      */
     public Piece copy();
+
+    /**
+     * Clone la pièce dans une nouvelle instance. Les écouteurs sont également
+     * clonés.
+     * 
+     * @return pièce clonée
+     * @throws CloneNotSupportedException levée lorsque l'interface
+     *                                    {@link java.lang.Clonable} n'est pas
+     *                                    implémentée
+     */
+    public Piece clone() throws CloneNotSupportedException;
 
     /**
      * Déplace une pièce.
