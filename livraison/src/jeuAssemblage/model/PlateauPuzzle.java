@@ -15,7 +15,7 @@ import piecesPuzzle.observer.ModelListener;
 /**
  * Classe représentant le plateau d'un jeu de pièce.
  */
-public class PlateauPuzzle extends AbstractListenableModel implements ModelListener, Serializable {
+public class PlateauPuzzle extends AbstractListenableModel implements ModelListener, Serializable, Cloneable {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -149,6 +149,17 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
      */
     public Piece getPiece(int index) {
         return this.pieces.get(index);
+    }
+
+    @Override
+    public PlateauPuzzle clone() throws CloneNotSupportedException {
+        PlateauPuzzle cloned = (PlateauPuzzle) super.clone();
+        cloned.actionResponsabilityChain = this.actionResponsabilityChain;
+        cloned.pieces = new ArrayList<>(this.pieces.size());
+        for (Piece piece : this.pieces) {
+            cloned.pieces.add(piece.clone());
+        }
+        return cloned;
     }
 
     /**

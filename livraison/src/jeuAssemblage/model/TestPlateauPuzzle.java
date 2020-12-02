@@ -1,8 +1,12 @@
 package jeuAssemblage.model;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNotEquals;
+
 import org.junit.Test;
 
 import junit.framework.TestCase;
+import piecesPuzzle.Piece;
 import piecesPuzzle.RectanglePiece;
 import piecesPuzzle.TPiece;
 import piecesPuzzle.Piece.Rotate;
@@ -19,6 +23,43 @@ public class TestPlateauPuzzle extends TestCase {
         assertTrue(board.addPiece(p1));
         assertFalse(board.addPiece(p2));
         assertTrue(board.addPiece(p3));
+    }
+
+    @Test
+    public void testClone() {
+        PlateauPuzzle board = new PlateauPuzzle(WIDTH, HEIGHT, 10);
+        RectanglePiece p1 = new RectanglePiece(1, 1, 2, 3);
+        RectanglePiece p2 = new RectanglePiece(6, 2, 1, 3);
+        board.addPiece(p1);
+        board.addPiece(p2);
+
+        try {
+            PlateauPuzzle board2 = (PlateauPuzzle) board.clone();
+            assertNotNull(board2);
+            assertNotEquals(board, board2);
+            assertEquals(board.getWidth(), board2.getWidth());
+            assertEquals(board.getHeight(), board2.getHeight());
+            assertEquals(board.getLeftAvailableActions(), board2.getLeftAvailableActions());
+            assertEquals(board.getMaxAvailableActions(), board2.getMaxAvailableActions());
+            assertEquals(board.getNumberOfPiece(), board2.getNumberOfPiece());
+            assertEquals(board.getActionResponsabilityChain(), board2.getActionResponsabilityChain());
+            for (int i = 0; i < board.getNumberOfPiece(); i++) {
+                Piece expectedPiece = board.getPiece(i);
+                Piece gottenPiece = board2.getPiece(i);
+                assertNotNull(gottenPiece);
+                assertEquals(expectedPiece.getX(), gottenPiece.getX());
+                assertEquals(expectedPiece.getY(), gottenPiece.getY());
+                if (expectedPiece.getWidth() != expectedPiece.getHeight()) {
+                    assertEquals(expectedPiece.getWidth(), gottenPiece.getWidth());
+                    assertEquals(expectedPiece.getHeight(), gottenPiece.getHeight());
+                }
+                assertEquals(expectedPiece.getPieceType(), gottenPiece.getPieceType());
+                assertNotEquals(expectedPiece.getBoard(), gottenPiece.getBoard());
+                assertArrayEquals(expectedPiece.getBoard(), gottenPiece.getBoard());
+            }
+        } catch (CloneNotSupportedException e) {
+            System.err.println(e);
+        }
     }
 
     @Test

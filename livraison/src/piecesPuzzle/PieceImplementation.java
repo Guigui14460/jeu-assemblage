@@ -168,6 +168,13 @@ public abstract class PieceImplementation extends AbstractListenableModel implem
         return this.pieceType;
     }
 
+    @Override
+    public Piece clone() throws CloneNotSupportedException {
+        PieceImplementation cloned = (PieceImplementation) super.clone();
+        cloned.board = board.clone();
+        return cloned;
+    }
+
     /**
      * Vérifie que les coordonnées données se trouvent bien à l'intérieur du
      * tableau.

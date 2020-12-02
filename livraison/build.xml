@@ -3,6 +3,7 @@
     <property name="app.name"      value="jeuAssemblage" />
     <property name="app.version"   value="0.1"/>
     <property name="app.fullname"  value="${app.name}-${app.version}"/>
+    <property name="app.mainclass"  value="jeuAssemblage.Main"/>
     
     <property name="build.home"    value="${basedir}/build"/>
     <property name="dist.home"     value="${basedir}/dist"/>
@@ -71,7 +72,7 @@
         <jar jarfile="${dist.home}/${app.fullname}.jar"
              basedir="${build.home}">
             <manifest>
-                <attribute name="Main-Class" value="jeuAssemblage.Main"/>
+                <attribute name="Main-Class" value="${app.mainclass}"/>
                 <attribute name="Class-Path" value="${lib.home}/junit.jar" />
             </manifest>
         </jar>
