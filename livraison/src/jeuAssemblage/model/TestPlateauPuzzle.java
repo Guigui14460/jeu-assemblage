@@ -46,10 +46,28 @@ public class TestPlateauPuzzle extends TestCase {
         board.addPiece(p3);
         board.rotatePiece(p2, Rotate.PLUS_90_DEGREES);
         assertTrue(board.translatePiece(p3, -1, 0));
+        assertTrue(board.translatePiece(p3, 0, 0));
         board.rotatePiece(p3, Rotate.PLUS_90_DEGREES);
 
         assertFalse(board.translatePiece(p1, -10, 2));
         assertTrue(board.translatePiece(p1, 3, 4));
+    }
+
+    @Test
+    public void testTranslateAndRotatePiece() {
+        PlateauPuzzle board = new PlateauPuzzle(WIDTH, HEIGHT, 10);
+        RectanglePiece p1 = new RectanglePiece(1, 1, 2, 3);
+        RectanglePiece p2 = new RectanglePiece(6, 2, 1, 3);
+        RectanglePiece p3 = new RectanglePiece(5, 4, 1, 6);
+        board.addPiece(p1);
+        board.addPiece(p2);
+        board.addPiece(p3);
+        board.rotatePiece(p2, Rotate.PLUS_90_DEGREES);
+        assertTrue(board.translatePiece(p3, -1, 0));
+        board.rotatePiece(p3, Rotate.PLUS_90_DEGREES);
+        assertTrue(board.translateAndRotatePiece(p3, 0, -2, Rotate.PLUS_90_DEGREES, 1));
+        assertFalse(board.translateAndRotatePiece(p1, 2, 1, Rotate.MINUS_90_DEGREES, 2));
+        assertTrue(board.translateAndRotatePiece(p1, 0, 0, Rotate.MINUS_90_DEGREES, 2));
     }
 
     @Test
@@ -90,7 +108,15 @@ public class TestPlateauPuzzle extends TestCase {
         assertEquals(1, board.getLeftAvailableActions());
         assertFalse(board.isFinished());
 
+        assertTrue(board.translatePiece(p3, 0, 0));
+        assertEquals(1, board.getLeftAvailableActions());
+        assertFalse(board.isFinished());
+
         assertFalse(board.translatePiece(p1, -10, 2));
+        assertEquals(1, board.getLeftAvailableActions());
+        assertFalse(board.isFinished());
+
+        assertTrue(board.translateAndRotatePiece(p1, 0, 0, Rotate.MINUS_90_DEGREES, 0));
         assertEquals(1, board.getLeftAvailableActions());
         assertFalse(board.isFinished());
 
@@ -99,6 +125,10 @@ public class TestPlateauPuzzle extends TestCase {
         assertTrue(board.isFinished());
 
         assertFalse(board.translatePiece(p1, 3, 4));
+        assertEquals(0, board.getLeftAvailableActions());
+        assertTrue(board.isFinished());
+
+        assertFalse(board.translateAndRotatePiece(p1, 0, 0, Rotate.MINUS_90_DEGREES, 0));
         assertEquals(0, board.getLeftAvailableActions());
         assertTrue(board.isFinished());
     }

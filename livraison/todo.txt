@@ -7,5 +7,3 @@ Si on a le temps :
     - Optimiser la mémoire et le calcul des pièces (avoir un utilitaire pour rotate en algorithmie)
 
 Faire des tests sur l'interface graphique.
-Faire un rotate et translate fusionné dans le plateau (utile pour l'interface graphique)
-Faire les vérif si on a bougé ou pas dans le plateau (pour translate et RotateAndTranslate)

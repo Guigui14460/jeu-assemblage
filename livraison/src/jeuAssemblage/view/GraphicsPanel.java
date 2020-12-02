@@ -15,6 +15,7 @@ import jeuAssemblage.Settings;
 import jeuAssemblage.model.PlateauPuzzle;
 import jeuAssemblage.model.chains.InBoardChain;
 import piecesPuzzle.Piece;
+import piecesPuzzle.Piece.Rotate;
 import piecesPuzzle.RectanglePiece;
 import piecesPuzzle.observer.ModelListener;
 
@@ -200,36 +201,32 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
                 }
             }
         } else {
-            if (this.errorPiece) { // en cas d'erreur, on remet la pièce comme avant
-                this.cancelSelection();
-            } else {
-                int usedActions = 0;
-                if (this.initialXSelectedPiece != newX || this.initialYSelectedPiece != newY) { // si la pièce à été
-                                                                                                // déplacée en X et/ou
-                                                                                                // en Y
-                    usedActions++; // équivaut à une action
-                }
-                switch (this.numberOfPlus90DegreeRotation) {
-                    case 0: // on tourne pas
+            this.cancelSelection();
+            if (!this.errorPiece) { // s'il n'y pas d'erreur, on applique les actions
+                Piece.Rotate rotationAngle = Rotate.PLUS_90_DEGREES;
+                int numberOfRotation = 0;
+                switch (this.numberOfPlus90DegreeRotation % 4) {
+                    case 1: // on tourne vers la droite une fois <=> 3 vers la gauche
+                        numberOfRotation++;
                         break;
                     case 2:
-                        usedActions += 2; // 2 actions pour tourner la pièce à 180°
+                        numberOfRotation += 2; // 2 actions pour tourner la pièce à 180° (gauche ou droite)
                         break;
-
-                    default:
-                        usedActions++; // 1 action pour tourner à +-90° ou +-270° (optimisation des coups)
+                    case 3: // on tourne vers la gauche <=> 3 vers la droite
+                        numberOfRotation++;
+                        rotationAngle = Rotate.MINUS_90_DEGREES;
+                        break;
+                    default: // 0 : on tourne pas
                         break;
                 }
-                if (!this.board.useAction(usedActions)) { // si on ne peut pas réaliser les actions, on annule
-                    this.cancelSelection();
-                }
+                this.board.translateAndRotatePiece(this.selectedPiece, newX - this.initialXSelectedPiece,
+                        newY - this.initialYSelectedPiece, rotationAngle, numberOfRotation);
             }
             // on remet toutes les variables de sélection à des valeurs nulles
             this.setSelectedPiece(null);
-            if (this.board.isFinished()) {
+            if (this.board.isFinished()) { // on vérifie si le jeu est fini ou pas
                 this.setEnabled(false);
             }
-            this.board.update();
         }
     }
 

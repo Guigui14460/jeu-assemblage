@@ -8,6 +8,7 @@ import jeuAssemblage.model.chains.Chain;
 import jeuAssemblage.model.chains.CollisionChain;
 import jeuAssemblage.model.chains.InBoardChain;
 import piecesPuzzle.Piece;
+import piecesPuzzle.Piece.Rotate;
 import piecesPuzzle.observer.AbstractListenableModel;
 import piecesPuzzle.observer.ModelListener;
 
@@ -227,39 +228,34 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
     }
 
     /**
-     * Tourne la pièce choisie dans un angle choisi en vérifiant si cela est
-     * possible.
+     * Tourne seulement la pièce choisie dans un angle choisi en vérifiant si cela
+     * est possible.
      * 
      * @param pieceToTurn   pièce à tourner
      * @param rotationAngle l'angle pour la rotation
      * @return booléen représentant le fait que la rotation a été effectuée ou non
      */
     public boolean rotatePiece(Piece pieceToTurn, Piece.Rotate rotationAngle) {
-        if (this.leftAvailableActions == 0) {
+        if (this.leftAvailableActions == 0) { // on verifie qu'on a encore un coup dispo
             return false;
         }
-        boolean toAdd = !this.pieces.contains(pieceToTurn);
-        boolean plus90Degrees = rotationAngle.equals(Piece.Rotate.PLUS_90_DEGREES);
-
-        pieceToTurn.rotate(rotationAngle);
-        if (toAdd) {
-            if (!this.addPiece(pieceToTurn)) {
-                pieceToTurn.rotate((plus90Degrees ? Piece.Rotate.MINUS_90_DEGREES : Piece.Rotate.PLUS_90_DEGREES));
-                return false;
-            }
-        } else {
-            if (!this.actionResponsabilityChain.performAction(this, pieceToTurn)) {
-                pieceToTurn.rotate((plus90Degrees ? Piece.Rotate.MINUS_90_DEGREES : Piece.Rotate.PLUS_90_DEGREES));
-                return false;
-            }
+        if (!this.pieces.contains(pieceToTurn)) {
+            return false;
         }
-        this.fireChange();
+
+        boolean plus90Degrees = rotationAngle.equals(Piece.Rotate.PLUS_90_DEGREES);
+        pieceToTurn.rotate(rotationAngle);
+        if (!this.actionResponsabilityChain.performAction(this, pieceToTurn)) {
+            pieceToTurn.rotate((plus90Degrees ? Piece.Rotate.MINUS_90_DEGREES : Piece.Rotate.PLUS_90_DEGREES));
+            return false;
+        }
         this.leftAvailableActions--;
+        this.fireChange();
         return true;
     }
 
     /**
-     * Déplace la pièce choisie selon les valeurs données.
+     * Déplace seulement la pièce choisie selon les valeurs données.
      * 
      * @param pieceToTranslate pièce à déplacer
      * @param dx               déplacement de la pièce sur l'axe des X
@@ -267,25 +263,70 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
      * @return booléen représentant le fait que la rotation a été effectuée ou non
      */
     public boolean translatePiece(Piece pieceToTranslate, int dx, int dy) {
-        if (this.leftAvailableActions == 0) {
+        if (this.leftAvailableActions == 0) { // on verifie qu'on a encore un coup dispo
             return false;
         }
-        boolean toAdd = !this.pieces.contains(pieceToTranslate);
-
-        pieceToTranslate.translate(dx, dy);
-        if (toAdd) {
-            if (!this.addPiece(pieceToTranslate)) {
-                pieceToTranslate.translate(-dx, -dy);
-                return false;
-            }
-        } else {
-            if (!this.actionResponsabilityChain.performAction(this, pieceToTranslate)) {
-                pieceToTranslate.translate(-dx, -dy);
-                return false;
-            }
+        if (!this.pieces.contains(pieceToTranslate)) {
+            return false;
         }
-        this.fireChange();
+        if (dx == 0 && dy == 0) { // on ne bouge pas donc on enlève pas de coups et pas besoin de mettre à jour
+            return true;
+        }
+        pieceToTranslate.translate(dx, dy);
+        if (!this.actionResponsabilityChain.performAction(this, pieceToTranslate)) {
+            pieceToTranslate.translate(-dx, -dy);
+            return false;
+        }
         this.leftAvailableActions--;
+        this.fireChange();
+        return true;
+    }
+
+    /**
+     * Cette méthode permet de déplacer et de tourner la pièce souhaitée. Elle
+     * permet de pouvoir effectuer ces 2 actions en même temps et non l'une à la
+     * suite de l'autre et façon optimisée (pour les vérifications et permet
+     * d'optimiser les actions).<br>
+     * <strong>N.B.:&nbsp;</strong>Fait la vérification après l'application des 2
+     * actions.
+     * 
+     * @param piece            pièce à déplacer et tourner
+     * @param dx               déplacement de la pièce sur l'axe des X
+     * @param dy               déplacement de la pièce sur l'axe des Y
+     * @param rotationAngle    l'angle pour la rotation
+     * @param numberOfRotation nombre de rotation à effectuer avec cet angle
+     * @return booléen représentant le fait que le déplacement ET la rotation ont
+     *         été effectuées ou non
+     */
+    public boolean translateAndRotatePiece(Piece piece, int dx, int dy, Piece.Rotate rotationAngle,
+            int numberOfRotation) {
+        boolean translation = !(dx == 0 && dy == 0); // si on ne bouge pas donc on enlève pas de coups
+        if (this.leftAvailableActions - (translation ? 1 : 0) - numberOfRotation <= 0) { // on verifie qu'on a assez
+                                                                                         // de coups dispo
+            return false;
+        }
+        if (!this.pieces.contains(piece)) {
+            return false;
+        }
+
+        boolean plus90Degrees = rotationAngle.equals(Piece.Rotate.PLUS_90_DEGREES);
+        if (translation) {
+            piece.translate(dx, dy);
+        }
+        for (int i = 0; i < numberOfRotation; i++) {
+            piece.rotate(rotationAngle);
+        }
+        if (!this.actionResponsabilityChain.performAction(this, piece)) {
+            if (translation) {
+                piece.translate(-dx, -dy);
+            }
+            for (int i = 0; i < numberOfRotation; i++) {
+                piece.rotate((plus90Degrees ? Piece.Rotate.MINUS_90_DEGREES : Piece.Rotate.PLUS_90_DEGREES));
+            }
+            return false;
+        }
+        this.leftAvailableActions -= (translation ? 1 : 0) + numberOfRotation;
+        this.fireChange();
         return true;
     }
 
