@@ -5,5 +5,3 @@ Si on a le temps :
     - Ajouter nouveau type de pièce (Z, S)
     - Changer InvertedL vers J
     - Optimiser la mémoire et le calcul des pièces (avoir un utilitaire pour rotate en algorithmie)
-
-Faire des tests sur l'interface graphique.

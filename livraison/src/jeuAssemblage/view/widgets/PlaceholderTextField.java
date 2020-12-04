@@ -1,4 +1,4 @@
-package jeuAssemblage.view;
+package jeuAssemblage.view.widgets;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
