@@ -260,6 +260,7 @@ public class ControlPartView extends JPanel implements ModelListener, ActionList
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
+            this.boardView.requestFocus();
             NegaMax ia = new NegaMax(this.board, 1);
 
             this.board.showBoard();
