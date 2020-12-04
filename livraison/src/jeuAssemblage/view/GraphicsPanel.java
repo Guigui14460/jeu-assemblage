@@ -180,6 +180,7 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
         if (this.selectedPiece != null) {
             int dx = arg0.getX() / Settings.BOX_SIZE - this.selectedPiece.getX();
             int dy = arg0.getY() / Settings.BOX_SIZE - this.selectedPiece.getY();
+            
             this.selectedPiece.translate(dx, dy); // on la bouge pour que ça l'update à l'écran
             // permet de savoir s'il y a un problème avec les nouvelles coordonnées de la
             // pièce
