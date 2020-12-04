@@ -24,10 +24,13 @@ import jeuAssemblage.model.PlateauPuzzle;
 import jeuAssemblage.model.PlateauPuzzleIO;
 import piecesPuzzle.observer.ModelListener;
 
+import jeuAssemblage.model.aiAlgorithms.Capsule;
+import jeuAssemblage.model.aiAlgorithms.NegaMax;
+
 /**
  * Classe permettant d'ajouter des contrôles sur l'application.
  */
-public class ControlPartView extends JPanel implements ModelListener {
+public class ControlPartView extends JPanel implements ModelListener,ActionListener {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -60,8 +63,12 @@ public class ControlPartView extends JPanel implements ModelListener {
     private PlateauPuzzleIO boardIO;
 
     private JLabel bestScoreLabel, scoreLabel;
-    private JButton saveConfig, scoreButton;
+    private JButton saveConfig, scoreButton,iaButton;
     private PlaceholderTextField playerNameTextField;
+
+    //////
+    private PlateauPuzzle board;
+    //////
 
     /**
      * Constructeur. Créer un panneau avec une ancienne configuration sauvegardée
@@ -81,12 +88,13 @@ public class ControlPartView extends JPanel implements ModelListener {
      */
     public ControlPartView(GUI gui, GraphicsPanel boardView, PlateauPuzzle board, int bestScore, String bestPlayer,
             int nbActionsOfBestScore, File oldFileConfig) throws IOException {
-        super(new GridLayout(5, 1, 0, 40));
+        super(new GridLayout(6, 1, 0, 40));
         this.bestScore = bestScore;
         this.bestPlayer = bestPlayer;
         this.nbActionsOfBestScore = nbActionsOfBestScore;
         this.oldFileConfig = oldFileConfig;
         this.boardIO = PlateauPuzzleIO.saveBoardInTmpFile(board);
+        this.board = board;
         board.addModelListener(this);
         this.createElements(gui, boardView, board);
     }
@@ -131,6 +139,13 @@ public class ControlPartView extends JPanel implements ModelListener {
         this.scoreButton.setEnabled(false);
         this.playerNameTextField = new PlaceholderTextField();
         this.playerNameTextField.setPlaceholder("Entrez un nom de joueur");
+
+        //////
+        this.iaButton = new JButton("laissez l'ia joué");
+        this.iaButton.setHorizontalAlignment(SwingConstants.CENTER);
+
+        /////
+
 
         // on leur met des listeners pour pouvoir les contrôler
         this.playerNameTextField.getDocument().addDocumentListener(new DocumentListener() {
@@ -216,11 +231,13 @@ public class ControlPartView extends JPanel implements ModelListener {
                 }
             }
         });
+        this.iaButton.addActionListener(this);
 
         this.add(this.bestScoreLabel);
         this.add(this.scoreLabel);
         this.add(this.playerNameTextField);
         this.add(this.saveConfig);
+        this.add(this.iaButton);
         this.add(this.scoreButton);
     }
 
@@ -245,4 +262,22 @@ public class ControlPartView extends JPanel implements ModelListener {
         scoreLabel.setText("<html>Il vous reste " + ((PlateauPuzzle) arg0).getLeftAvailableActions()
                 + "<br>actions disponibles</html>");
     }
+
+    public void actionPerformed(ActionEvent e) {
+        try {
+            NegaMax ia = new NegaMax(this.board,1);
+
+            this.board.showBoard();
+            System.out.println("----------------");
+            
+        Capsule cap = ia.start();
+        
+        cap.getBoard().showBoard();
+
+        } catch (Exception exeption) {
+            System.out.println(exeption);
+        }
+        
+    }
+
 }
