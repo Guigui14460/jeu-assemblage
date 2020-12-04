@@ -22,6 +22,7 @@ import javax.swing.filechooser.FileSystemView;
 import jeuAssemblage.Settings;
 import jeuAssemblage.model.PlateauPuzzle;
 import jeuAssemblage.model.PlateauPuzzleIO;
+import jeuAssemblage.view.widgets.PlaceholderTextField;
 import piecesPuzzle.observer.ModelListener;
 
 import jeuAssemblage.model.aiAlgorithms.Capsule;
@@ -30,7 +31,7 @@ import jeuAssemblage.model.aiAlgorithms.NegaMax;
 /**
  * Classe permettant d'ajouter des contrôles sur l'application.
  */
-public class ControlPartView extends JPanel implements ModelListener,ActionListener {
+public class ControlPartView extends JPanel implements ModelListener, ActionListener, DocumentListener, KeyListener {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -61,14 +62,14 @@ public class ControlPartView extends JPanel implements ModelListener,ActionListe
      * instance de {@link PlateauPuzzle}.
      */
     private PlateauPuzzleIO boardIO;
+    private PlateauPuzzle board;
 
     private JLabel bestScoreLabel, scoreLabel;
-    private JButton saveConfig, scoreButton,iaButton;
+    private JButton saveConfigButton, scoreButton, aiButton;
     private PlaceholderTextField playerNameTextField;
 
-    //////
-    private PlateauPuzzle board;
-    //////
+    private GraphicsPanel boardView;
+    private GUI gui;
 
     /**
      * Constructeur. Créer un panneau avec une ancienne configuration sauvegardée
@@ -95,8 +96,10 @@ public class ControlPartView extends JPanel implements ModelListener,ActionListe
         this.oldFileConfig = oldFileConfig;
         this.boardIO = PlateauPuzzleIO.saveBoardInTmpFile(board);
         this.board = board;
-        board.addModelListener(this);
-        this.createElements(gui, boardView, board);
+        this.board.addModelListener(this);
+        this.boardView = boardView;
+        this.gui = gui;
+        this.createElements();
     }
 
     /**
@@ -113,131 +116,42 @@ public class ControlPartView extends JPanel implements ModelListener,ActionListe
     }
 
     /**
-     * 
-     * Méthode auxiliaire permettant de créer les éléments de ce panel. *
-     * 
-     * @param gui       fenêtre principale
-     * @param boardView panneau où les pièces sont dessinées
-     * @param board     plateau de jeu
+     * Méthode auxiliaire permettant de créer les éléments de ce panel.
      */
-    private void createElements(GUI gui, GraphicsPanel boardView, PlateauPuzzle board) {
+    private void createElements() {
         // on initialise tous les composants
         this.bestScoreLabel = new JLabel("<html>Meilleur score : " + (this.bestScore == -1 ? "Aucun"
                 : (this.bestScore + "<br>par " + this.bestPlayer + " en " + this.nbActionsOfBestScore + " coups"))
                 + "</html>");
         this.bestScoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
         this.scoreLabel = new JLabel(
-                "<html>Il vous reste " + board.getLeftAvailableActions() + "<br>actions disponibles</html>");
+                "<html>Il vous reste " + this.board.getLeftAvailableActions() + "<br>actions disponibles</html>");
         this.scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        this.saveConfig = new JButton("<html>Sauvegarder cette<br>configuration</html>");
-        this.saveConfig.setHorizontalAlignment(SwingConstants.CENTER);
-        this.saveConfig.setToolTipText("Terminez le jeu pour débloquer ce bouton");
-        this.saveConfig.setEnabled(false);
+        this.playerNameTextField = new PlaceholderTextField();
+        this.playerNameTextField.setPlaceholder("Entrez un nom de joueur");
+        this.saveConfigButton = new JButton("<html>Sauvegarder cette<br>configuration</html>");
+        this.saveConfigButton.setHorizontalAlignment(SwingConstants.CENTER);
+        this.saveConfigButton.setToolTipText("Terminez le jeu pour débloquer ce bouton");
+        this.saveConfigButton.setEnabled(false);
         this.scoreButton = new JButton("<html>Terminer la partie<br>et regarder le score</html>");
         this.scoreButton.setHorizontalAlignment(SwingConstants.CENTER);
         this.scoreButton.setToolTipText("Entrez un nom d'utilisateur pour activer ce bouton");
         this.scoreButton.setEnabled(false);
-        this.playerNameTextField = new PlaceholderTextField();
-        this.playerNameTextField.setPlaceholder("Entrez un nom de joueur");
-
-        //////
-        this.iaButton = new JButton("laissez l'ia joué");
-        this.iaButton.setHorizontalAlignment(SwingConstants.CENTER);
-
-        /////
-
+        this.aiButton = new JButton("Laisser l'IA jouer");
+        this.aiButton.setHorizontalAlignment(SwingConstants.CENTER);
 
         // on leur met des listeners pour pouvoir les contrôler
-        this.playerNameTextField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void changedUpdate(DocumentEvent arg0) {
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent arg0) {
-                scoreButton.setEnabled(true);
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent arg0) {
-                scoreButton.setEnabled(arg0.getOffset() != 0);
-            }
-        });
-        this.playerNameTextField.addKeyListener(new KeyListener() {
-            @Override
-            public void keyPressed(KeyEvent arg0) {
-                if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    boardView.requestFocus(); // permet de retourner sur le plateau
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent arg0) {
-            }
-
-            @Override
-            public void keyTyped(KeyEvent arg0) {
-            }
-        });
-        this.scoreButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                int score = board.calculateScore();
-                scoreLabel.setText("<html>Score actuel : " + score + "<br>en "
-                        + (board.getMaxAvailableActions() - board.getLeftAvailableActions()) + " coups</html>");
-                if (saveScore(score, playerNameTextField.getText())) {
-                    scoreLabel.setForeground(Color.GREEN);
-                    saveConfig.setEnabled(true);
-                } else {
-                    scoreLabel.setForeground(Color.RED);
-                    saveConfig.setToolTipText("Votre score n'est pas un record et ne peut être enregistré.");
-                }
-                boardView.setEnabled(false);
-            }
-        });
-        this.saveConfig.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                File file = oldFileConfig;
-                if (file == null) {
-                    JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-                    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                    chooser.setDialogTitle("Choisir un fichier pour enregistrer la configuration");
-                    chooser.setMultiSelectionEnabled(false);
-                    chooser.setFileFilter(Settings.FILENAME_FILTER);
-                    int returnValue = chooser.showSaveDialog(null);
-
-                    if (JFileChooser.APPROVE_OPTION == returnValue) {
-                        file = new File(chooser.getSelectedFile().getAbsolutePath() + (chooser.getSelectedFile()
-                                .getAbsolutePath().indexOf(Settings.BOARD_FILE_EXTENSION) != -1 ? ""
-                                        : "." + Settings.BOARD_FILE_EXTENSION));
-                    }
-                }
-                if (file != null) {
-                    try {
-                        boardIO.saveConfigInFile(file, bestScore, bestPlayer,
-                                board.getMaxAvailableActions() - board.getLeftAvailableActions());
-                        remove(saveConfig);
-                        remove(scoreButton);
-                        JOptionPane.showMessageDialog(gui,
-                                "La sauvegarde de votre partie s'est déroulée sans accroc :)", "Sauvegarde réussie",
-                                JOptionPane.INFORMATION_MESSAGE);
-                        gui.dispose();
-                    } catch (IOException | ClassNotFoundException e) {
-                        JOptionPane.showMessageDialog(gui,
-                                "Une erreur est intervenue lors de la sauvegarde de votre partie :/",
-                                "Erreur sauvegarde", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            }
-        });
-        this.iaButton.addActionListener(this);
+        this.playerNameTextField.getDocument().addDocumentListener(this);
+        this.playerNameTextField.addKeyListener(this);
+        this.saveConfigButton.addActionListener(e -> this.saveConfig());
+        this.scoreButton.addActionListener(e -> this.finishGame());
+        this.aiButton.addActionListener(this);
 
         this.add(this.bestScoreLabel);
         this.add(this.scoreLabel);
         this.add(this.playerNameTextField);
-        this.add(this.saveConfig);
-        this.add(this.iaButton);
+        this.add(this.saveConfigButton);
+        this.add(this.aiButton);
         this.add(this.scoreButton);
     }
 
@@ -259,25 +173,105 @@ public class ControlPartView extends JPanel implements ModelListener,ActionListe
 
     @Override
     public void somethingHasChanged(Object arg0) {
-        scoreLabel.setText("<html>Il vous reste " + ((PlateauPuzzle) arg0).getLeftAvailableActions()
+        this.scoreLabel.setText("<html>Il vous reste " + ((PlateauPuzzle) arg0).getLeftAvailableActions()
                 + "<br>actions disponibles</html>");
+        if (this.board.isFinished()) {
+            this.aiButton.setEnabled(false);
+        }
     }
 
+    @Override
+    public void changedUpdate(DocumentEvent arg0) {
+    }
+
+    @Override
+    public void insertUpdate(DocumentEvent arg0) {
+        this.scoreButton.setEnabled(true);
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent arg0) {
+        this.scoreButton.setEnabled(arg0.getOffset() != 0);
+    }
+
+    @Override
+    public void keyPressed(KeyEvent arg0) {
+        if (arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            this.boardView.requestFocus(); // permet de retourner sur le plateau
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent arg0) {
+    }
+
+    @Override
+    public void keyTyped(KeyEvent arg0) {
+    }
+
+    public void saveConfig() {
+        File file = this.oldFileConfig;
+        if (file == null) {
+            JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            chooser.setDialogTitle("Choisir un fichier pour enregistrer la configuration");
+            chooser.setMultiSelectionEnabled(false);
+            chooser.setFileFilter(Settings.FILENAME_FILTER);
+            int returnValue = chooser.showSaveDialog(null);
+
+            if (JFileChooser.APPROVE_OPTION == returnValue) {
+                file = new File(chooser.getSelectedFile().getAbsolutePath()
+                        + (chooser.getSelectedFile().getAbsolutePath().indexOf(Settings.BOARD_FILE_EXTENSION) != -1 ? ""
+                                : "." + Settings.BOARD_FILE_EXTENSION));
+            }
+        }
+        if (file != null) {
+            try {
+                this.boardIO.saveConfigInFile(file, this.bestScore, this.bestPlayer,
+                        this.board.getMaxAvailableActions() - this.board.getLeftAvailableActions());
+                remove(this.saveConfigButton);
+                remove(this.scoreButton);
+                JOptionPane.showMessageDialog(gui, "La sauvegarde de votre partie s'est déroulée sans accroc :)",
+                        "Sauvegarde réussie", JOptionPane.INFORMATION_MESSAGE);
+                this.gui.dispose();
+            } catch (IOException | ClassNotFoundException e) {
+                JOptionPane.showMessageDialog(this.gui,
+                        "Une erreur est intervenue lors de la sauvegarde de votre partie :/", "Erreur sauvegarde",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public void finishGame() {
+        int score = this.board.calculateScore();
+        this.scoreLabel.setText("<html>Score actuel : " + score + "<br>en "
+                + (this.board.getMaxAvailableActions() - this.board.getLeftAvailableActions()) + " coups</html>");
+        if (saveScore(score, playerNameTextField.getText())) {
+            this.scoreLabel.setForeground(Color.GREEN);
+            this.saveConfigButton.setEnabled(true);
+        } else {
+            this.scoreLabel.setForeground(Color.RED);
+            this.saveConfigButton.setToolTipText("Votre score n'est pas un record et ne peut être enregistré.");
+        }
+        this.boardView.setEnabled(false);
+        this.scoreButton.setEnabled(false);
+    }
+
+    @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            NegaMax ia = new NegaMax(this.board,1);
+            NegaMax ia = new NegaMax(this.board, 1);
 
             this.board.showBoard();
             System.out.println("----------------");
-            
-        Capsule cap = ia.start();
-        
-        cap.getBoard().showBoard();
 
-        } catch (Exception exeption) {
-            System.out.println(exeption);
+            Capsule cap = ia.start();
+
+            cap.getBoard().showBoard();
+
+        } catch (Exception ex) {
+            System.out.println(ex);
         }
-        
-    }
 
+    }
 }

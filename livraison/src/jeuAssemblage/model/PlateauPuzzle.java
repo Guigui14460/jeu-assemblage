@@ -142,11 +142,11 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
     }
 
     /**
-     * Récupère une list de toutes les pièces 
+     * Récupère la liste de toutes les pièces.
      * 
-     * @return list de pièce
+     * @return liste de pièces
      */
-    public List<Piece> getPieces(){
+    public List<Piece> getPieces() {
         return this.pieces;
     }
 
@@ -284,28 +284,24 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
      */
     public boolean translatePiece(Piece pieceToTranslate, int dx, int dy) {
         if (this.leftAvailableActions == 0) { // on verifie qu'on a encore un coup dispo
-        
             return false;
         }
         if (!this.pieces.contains(pieceToTranslate)) {
-         
             return false;
         }
         if (dx == 0 && dy == 0) { // on ne bouge pas donc on enlève pas de coups et pas besoin de mettre à jour
-            
             return true;
         }
         pieceToTranslate.translate(dx, dy);
-  
         if (!this.actionResponsabilityChain.performAction(this, pieceToTranslate)) {
-          
             pieceToTranslate.translate(-dx, -dy);
             return false;
         }
         this.leftAvailableActions--;
         this.fireChange();
         // System.out.println("valide");
-        // System.out.println(dx + pieceToTranslate.getX()+ "/" + dy +pieceToTranslate.getY());
+        // System.out.println(dx + pieceToTranslate.getX()+ "/" + dy
+        // +pieceToTranslate.getY());
         return true;
     }
 
@@ -328,23 +324,17 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
     public boolean translateAndRotatePiece(Piece piece, int dx, int dy, Piece.Rotate rotationAngle,
             int numberOfRotation) {
         boolean translation = !(dx == 0 && dy == 0); // si on ne bouge pas donc on enlève pas de coups
-       
-        if (this.leftAvailableActions - (translation ? 1 : 0) - numberOfRotation <= 0) { // on verifie qu'on a assez
-                                                                                         // de coups dispo
-                                                                                                 
+        if (this.leftAvailableActions - (translation ? 1 : 0) - numberOfRotation < 0) { // on verifie qu'on a assez
+                                                                                        // de coups dispo
             return false;
         }
-     
-        
+
         if (!this.pieces.contains(piece)) {
-            
             return false;
         }
-       
+
         boolean plus90Degrees = rotationAngle.equals(Piece.Rotate.PLUS_90_DEGREES);
-  
         if (translation) {
-    
             piece.translate(dx, dy);
         }
         for (int i = 0; i < numberOfRotation; i++) {
