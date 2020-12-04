@@ -85,10 +85,10 @@ public class DefaultPieceArrangement implements PieceArrangement {
                 arrangement5.addPieces(piece);
 
                 DEFAULT_ARRANGEMENTS.add(arrangement1);
-                DEFAULT_ARRANGEMENTS.add(arrangement2);
-                DEFAULT_ARRANGEMENTS.add(arrangement3);
-                DEFAULT_ARRANGEMENTS.add(arrangement4);
-                DEFAULT_ARRANGEMENTS.add(arrangement5);
+                // DEFAULT_ARRANGEMENTS.add(arrangement2);
+                // DEFAULT_ARRANGEMENTS.add(arrangement3);
+                // DEFAULT_ARRANGEMENTS.add(arrangement4);
+                // DEFAULT_ARRANGEMENTS.add(arrangement5);
         }
 
         @Override
