@@ -169,7 +169,7 @@ public class TestPlateauPuzzle extends TestCase {
         assertEquals(0, board.getLeftAvailableActions());
         assertTrue(board.isFinished());
 
-        assertFalse(board.translateAndRotatePiece(p1, 0, 0, Rotate.MINUS_90_DEGREES, 0));
+        assertTrue(board.translateAndRotatePiece(p1, 0, 0, Rotate.MINUS_90_DEGREES, 0));
         assertEquals(0, board.getLeftAvailableActions());
         assertTrue(board.isFinished());
     }
