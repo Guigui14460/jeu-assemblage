@@ -278,6 +278,7 @@ public class ControlPartView extends JPanel implements ModelListener, ActionList
         }
         this.boardView.setEnabled(false);
         this.scoreButton.setEnabled(false);
+        this.aiButton.setEnabled(false);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class NegaMin implements AI {
     private PlateauPuzzle board;
 
     /**
-     * depth de raisonnement de l'algorithme.
+     * Profondeur de raisonnement de l'algorithme.
      */
     private int depth;
 
@@ -27,7 +27,7 @@ public class NegaMin implements AI {
      * Constructeur.
      * 
      * @param board plateau de jeu
-     * @param depth depth de raisonnement
+     * @param depth profondeur de raisonnement
      */
     public NegaMin(PlateauPuzzle board, int depth) {
         this.board = board;
@@ -46,7 +46,7 @@ public class NegaMin implements AI {
     /**
      * Constructeur.
      * 
-     * @param depth depth de raisonnement
+     * @param depth profondeur de raisonnement
      */
     public NegaMin(int depth) {
         this.depth = depth;

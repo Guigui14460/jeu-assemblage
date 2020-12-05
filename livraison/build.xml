@@ -51,6 +51,7 @@
         <javac srcdir="${src.home}"
                destdir="${build.home}"
                debug="${compile.debug}"
+               includeantruntime="false"
                deprecation="${compile.deprecation}"
                optimize="${compile.optimize}"
                source="${javac.version}" 
