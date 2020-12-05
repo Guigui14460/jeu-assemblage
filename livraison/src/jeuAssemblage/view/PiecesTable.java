@@ -33,4 +33,8 @@ public class PiecesTable extends JTable {
         });
         this.setShowHorizontalLines(true);
     }
+
+    public void reset(PlateauPuzzle board, GraphicsPanel boardView){
+        this.setModel(new PlateauPuzzleAdapterToTableModel(board));
+    }
 }
