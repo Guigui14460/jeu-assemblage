@@ -97,8 +97,12 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
         this.repaint();
     }
 
-
-    public void changeBoard(PlateauPuzzle board){
+    /**
+     * Change le plateau de jeu. Notamment utilisé pour montrer la solution de l'IA.
+     * 
+     * @param board plateau de jeu
+     */
+    public void changeBoard(PlateauPuzzle board) {
         this.board = board;
         this.board.addModelListener(this);
         this.repaint();
