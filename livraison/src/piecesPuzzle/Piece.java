@@ -94,8 +94,7 @@ public interface Piece extends ListenableModel, Serializable, Cloneable {
      * 
      * @return pièce clonée
      * @throws CloneNotSupportedException levée lorsque l'interface
-     *                                    {@link java.lang.Clonable} n'est pas
-     *                                    implémentée
+     *                                    java.lang.Clonable n'est pas implémentée
      */
     public Piece clone() throws CloneNotSupportedException;
 

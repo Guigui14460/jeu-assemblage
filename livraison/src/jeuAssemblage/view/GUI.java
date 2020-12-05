@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
+import jeuAssemblage.model.aiAlgorithms.AI;
 import jeuAssemblage.model.PlateauPuzzle;
 
 /**
@@ -25,7 +26,8 @@ public class GUI extends JFrame {
      * @param file                 fichier d'où les informations proviennent
      * @throws IOException levée lorsque qu'il y a une erreur de lecture
      */
-    public GUI(PlateauPuzzle board, int score, String player, int nbActionsOfBestScore, File file) throws IOException {
+    public GUI(PlateauPuzzle board, int score, String player, int nbActionsOfBestScore, File file, AI algorithm)
+            throws IOException {
         super("Jeu assemblage de pièces");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
@@ -36,8 +38,8 @@ public class GUI extends JFrame {
             contentPane.removeAll();
             contentPane.add(boardView, BorderLayout.CENTER);
             contentPane.add(pieceTable, BorderLayout.SOUTH);
-            contentPane.add(new ControlPartView(this, boardView, board, score, player, nbActionsOfBestScore, file,pieceTable),
-                    BorderLayout.EAST);
+            contentPane.add(new ControlPartView(this, boardView, board, score, player, nbActionsOfBestScore, file,
+                    pieceTable, algorithm), BorderLayout.EAST);
         } catch (IOException e) {
             e.printStackTrace();
         }

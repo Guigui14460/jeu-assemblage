@@ -3,63 +3,112 @@ package jeuAssemblage.model.aiAlgorithms;
 import java.util.List;
 import java.util.ArrayList;
 
+import jeuAssemblage.Settings;
 import jeuAssemblage.model.PlateauPuzzle;
 import piecesPuzzle.Piece;
 import piecesPuzzle.Piece.Rotate;
 
-public class NegaMin {
+/**
+ * Algorithme d'intelligence artificielle dérivé de l'algorithme MinMax, utilisé
+ * notamment à la théorie des jeux.
+ */
+public class NegaMin implements AI {
+    /**
+     * Plateau de jeu.
+     */
     private PlateauPuzzle board;
-    private int profondeur;
 
-    public NegaMin(PlateauPuzzle board, int profondeur) throws CloneNotSupportedException {
-        this.profondeur = profondeur;
+    /**
+     * depth de raisonnement de l'algorithme.
+     */
+    private int depth;
+
+    /**
+     * Constructeur.
+     * 
+     * @param board plateau de jeu
+     * @param depth depth de raisonnement
+     */
+    public NegaMin(PlateauPuzzle board, int depth) {
+        this.board = board;
+        this.depth = depth;
+    }
+
+    /**
+     * Constructeur. Initialise la profondeur à la valeur par défaut.
+     * 
+     * @param board plateau de jeu
+     */
+    public NegaMin(PlateauPuzzle board) {
+        this(board, Settings.AI_DEPTH);
+    }
+
+    /**
+     * Constructeur.
+     * 
+     * @param depth depth de raisonnement
+     */
+    public NegaMin(int depth) {
+        this.depth = depth;
+    }
+
+    /**
+     * Constructeur. Initialise la profondeur à la valeur par défaut.
+     */
+    public NegaMin() {
+        this(Settings.AI_DEPTH);
+    }
+
+    @Override
+    public void setBoard(PlateauPuzzle board) {
         this.board = board;
     }
 
-    public Capsule start() {
+    @Override
+    public Capsule start() throws CloneNotSupportedException {
+        System.out.println(depth);
         try {
-            if (this.profondeur == 0 || this.board.isFinished()) {
+            if (this.depth == 0 || this.board.isFinished()) {
                 return new Capsule(this.board, this.board.calculateScore());
-            } else {
-                int score = this.board.calculateScore();
-                for (Capsule p : this.createNode(this.board)) {
-                    Capsule val = new NegaMin(p.getBoard(), this.profondeur - 1).start();
-                    System.out.println("(" + score + ";" + val.getValue() + ")");
-
-                    if (score > val.getValue()) {
-                        System.out.println("a");
-                        score = val.getValue();
-                        this.board = val.getBoard();
-                    }
+            }
+            int score = this.board.calculateScore();
+            for (Capsule capsule : this.createNode()) {
+                if (score >= capsule.getValue()) {
+                    Capsule val = new NegaMin(capsule.getBoard(), this.depth - 1).start();
+                    score = val.getValue();
+                    this.board = val.getBoard();
                 }
             }
+            return new Capsule(this.board, score);
         } catch (CloneNotSupportedException e) {
-            System.out.println("bug:");
-            System.out.println(e);
+            System.out.println("Bug clonage : " + e);
         }
-        return new Capsule(this.board, this.board.calculateScore());
+        return null;
     }
 
-    public List<Capsule> createNode(PlateauPuzzle base) {
+    /**
+     * Génère toutes les actions possibles pour un noeud. On peut voir cela comme la
+     * creation de tous les noeuds fils d'un certain noeud donné.
+     * 
+     * @param base plateau actuellement dans la pile de récusivité
+     * @return liste des noeuds fils
+     */
+    private List<Capsule> createNode() {
         List<Capsule> capsules = new ArrayList<>();
         try {
+            PlateauPuzzle tmpBoard;
             for (int i = 0; i < this.board.getNumberOfPiece(); i++) {
                 Piece p = this.board.getPiece(i);
-
-                int x = p.getX();
-                int y = p.getY();
-                System.out.println("P=" + p);
-                for (int j = -this.board.getWidth() + 1; j < this.board.getWidth(); j++) {
-                    for (int k = -this.board.getHeight() + 1; k < this.board.getHeight(); k++) {
+                for (int j = -p.getX(); j < this.board.getWidth() - p.getWidth() - p.getX(); j++) {
+                    for (int k = -p.getY(); k < this.board.getHeight() - p.getHeight() - p.getY(); k++) {
                         for (Rotate rotationAngle : Rotate.values()) {
                             for (int l = 0; l <= 2; l++) {
                                 if (!(j == 0 && k == 0
                                         && (l == 0 || (l == 2 && Rotate.MINUS_90_DEGREES.equals(rotationAngle))))) {
-                                    Capsule tmpBoard = new Capsule(board.clone(), 0);
-                                    if (tmpBoard.getBoard().translateAndRotatePiece(tmpBoard.getBoard().getPiece(i), j,
-                                            k, rotationAngle, l)) {
-                                        capsules.add(tmpBoard);
-                                        System.out.println(j + "," + k + " : " + l + "x " + rotationAngle);
+                                    tmpBoard = board.clone();
+                                    if (tmpBoard.translateAndRotatePiece(tmpBoard.getPiece(i), j, k, rotationAngle,
+                                            l)) {
+                                        capsules.add(new Capsule(tmpBoard, tmpBoard.calculateScore()));
                                     }
                                 }
                             }

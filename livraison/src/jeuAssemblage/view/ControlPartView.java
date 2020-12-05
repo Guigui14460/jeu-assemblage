@@ -22,14 +22,11 @@ import javax.swing.filechooser.FileSystemView;
 import jeuAssemblage.Settings;
 import jeuAssemblage.model.PlateauPuzzle;
 import jeuAssemblage.model.PlateauPuzzleIO;
-import jeuAssemblage.view.widgets.PlaceholderTextField;
-import piecesPuzzle.observer.ModelListener;
-
+import jeuAssemblage.model.aiAlgorithms.AI;
 import jeuAssemblage.model.aiAlgorithms.Capsule;
-import jeuAssemblage.model.aiAlgorithms.NegaMax;
-import jeuAssemblage.model.aiAlgorithms.NegaMin;
-
+import jeuAssemblage.view.widgets.PlaceholderTextField;
 import piecesPuzzle.Piece;
+import piecesPuzzle.observer.ModelListener;
 
 /**
  * Classe permettant d'ajouter des contrôles sur l'application.
@@ -65,17 +62,23 @@ public class ControlPartView extends JPanel implements ModelListener, ActionList
      * instance de {@link PlateauPuzzle}.
      */
     private PlateauPuzzleIO boardIO;
+
+    /**
+     * Plateau de jeu.
+     */
     private PlateauPuzzle board;
+
+    /**
+     * Algorithme d'intelligence artificielle à utiliser.
+     */
+    private AI algorithm;
 
     private JLabel bestScoreLabel, scoreLabel;
     private JButton saveConfigButton, scoreButton, aiButton;
     private PlaceholderTextField playerNameTextField;
-
     private GraphicsPanel boardView;
     private GUI gui;
-    
     private PiecesTable piecesTable;
-   
 
     /**
      * Constructeur. Créer un panneau avec une ancienne configuration sauvegardée
@@ -90,11 +93,13 @@ public class ControlPartView extends JPanel implements ModelListener, ActionList
      * @param bestPlayer           joueur associé au meilleur score
      * @param nbActionsOfBestScore nombre d'actions associées au meilleur score
      * @param oldFileConfig        fichier de la configuration utilisée
+     * @param piecesTable          table de l'interface graphique
+     * @param algorithm            algorithme d'intelligence artificielle à utiliser
      * @throws IOException levée lorsque l'on n'arrive pas à lire ou écrire dans les
      *                     fichiers
      */
     public ControlPartView(GUI gui, GraphicsPanel boardView, PlateauPuzzle board, int bestScore, String bestPlayer,
-            int nbActionsOfBestScore, File oldFileConfig,PiecesTable piecesTable) throws IOException {
+            int nbActionsOfBestScore, File oldFileConfig, PiecesTable piecesTable, AI algorithm) throws IOException {
         super(new GridLayout(6, 1, 0, 40));
         this.bestScore = bestScore;
         this.bestPlayer = bestPlayer;
@@ -103,6 +108,7 @@ public class ControlPartView extends JPanel implements ModelListener, ActionList
         this.boardIO = PlateauPuzzleIO.saveBoardInTmpFile(board);
         this.board = board;
         this.board.addModelListener(this);
+        this.algorithm = algorithm;
         this.boardView = boardView;
         this.gui = gui;
         this.piecesTable = piecesTable;
@@ -112,14 +118,17 @@ public class ControlPartView extends JPanel implements ModelListener, ActionList
     /**
      * Constructeur. Permet de créer un panneau où une configuration est utilisée.
      * 
-     * @param gui       fenêtre principale
-     * @param boardView panneau où les pièces sont dessinées
-     * @param board     plateau de jeu
+     * @param gui         fenêtre principale
+     * @param boardView   panneau où les pièces sont dessinées
+     * @param board       plateau de jeu
+     * @param piecesTable table de l'interface graphique
+     * @param algorithm   algorithme d'intelligence artificielle à utiliser
      * @throws IOException levée lorsque l'on n'arrive pas à lire ou écrire dans les
      *                     fichiers
      */
-    public ControlPartView(GUI gui, GraphicsPanel boardView, PlateauPuzzle board, PiecesTable piecesTable) throws IOException {
-        this(gui, boardView, board, -1, null, -1, null,piecesTable);
+    public ControlPartView(GUI gui, GraphicsPanel boardView, PlateauPuzzle board, PiecesTable piecesTable, AI algorithm)
+            throws IOException {
+        this(gui, boardView, board, -1, null, -1, null, piecesTable, algorithm);
     }
 
     /**
@@ -216,6 +225,9 @@ public class ControlPartView extends JPanel implements ModelListener, ActionList
     public void keyTyped(KeyEvent arg0) {
     }
 
+    /**
+     * Méthode permettant de sauvegarder la configuration de cette partie.
+     */
     public void saveConfig() {
         File file = this.oldFileConfig;
         if (file == null) {
@@ -249,6 +261,10 @@ public class ControlPartView extends JPanel implements ModelListener, ActionList
         }
     }
 
+    /**
+     * Cette méthode permet de terminer la partie et d'effectuer les changements
+     * visuels liés à cette action.
+     */
     public void finishGame() {
         int score = this.board.calculateScore();
         this.scoreLabel.setText("<html>Score actuel : " + score + "<br>en "
@@ -267,23 +283,16 @@ public class ControlPartView extends JPanel implements ModelListener, ActionList
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            this.boardView.requestFocus();
-            NegaMin ia = new NegaMin(this.board, 1);
-
-            this.board.showBoard();
-            System.out.println("----------------");
-
-            Capsule cap = ia.start();
-            
-            this.piecesTable.reset(cap.getBoard(), boardView);
-            this.boardView.changeBoard(cap.getBoard());
-         
-
-            cap.getBoard().showBoard();
-
+            this.boardView.requestFocus(); // on remet le focus sur le plateau
+            Capsule solution = this.algorithm.start();
+            if (solution != null) { // si on a une solution
+                this.piecesTable.reset(solution.getBoard(), boardView); // on change la table
+                this.boardView.changeBoard(solution.getBoard()); // on change aussi le visuel du plateau
+                this.board = solution.getBoard();
+            }
         } catch (Exception ex) {
-            System.out.println(ex);
+            JOptionPane.showMessageDialog(null, "Une erreur est intervenue lors de l'exécution de l'algorithme.",
+                    "Erreur algorithme", JOptionPane.ERROR_MESSAGE);
         }
-
     }
 }

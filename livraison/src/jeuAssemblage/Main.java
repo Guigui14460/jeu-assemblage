@@ -7,7 +7,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileSystemView;
 
+import jeuAssemblage.model.PlateauPuzzle;
 import jeuAssemblage.model.PlateauPuzzleIO;
+import jeuAssemblage.model.aiAlgorithms.AI;
+import jeuAssemblage.model.aiAlgorithms.NegaMin;
 import jeuAssemblage.model.arrangements.DefaultPieceArrangement;
 import jeuAssemblage.model.arrangements.PieceArrangement;
 import jeuAssemblage.model.arrangements.PlateauPuzzleFactory;
@@ -23,6 +26,11 @@ public class Main {
     private static PieceArrangement arrangement = new DefaultPieceArrangement();
 
     /**
+     * L'algorithme d'intelligence artificielle.
+     */
+    private static AI algorithm = new NegaMin();
+
+    /**
      * Méthode principale appelée pour démarrer l'application.
      * 
      * @param args arguments données via le terminal
@@ -32,7 +40,7 @@ public class Main {
         Object[] options = { "Charger une partie", "Créer une nouvelle partie" };
         int n = JOptionPane.showOptionDialog(null, "Quel choix voulez-vous faire ?", "Début de partie",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
-        if (n == 0) {
+        if (n == 0) { // choisi un de charger une config
             JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             chooser.setDialogTitle("Choisir un fichier pour enregistrer la configuration");
@@ -43,8 +51,9 @@ public class Main {
             if (JFileChooser.APPROVE_OPTION == returnValue) {
                 try {
                     PlateauPuzzleIO boardIO = PlateauPuzzleIO.loadOldConfig(chooser.getSelectedFile());
+                    algorithm.setBoard(boardIO.getBoard());
                     new GUI(boardIO.getBoard(), boardIO.getBestScore(), boardIO.getPlayer(), boardIO.getNumberActions(),
-                            chooser.getSelectedFile());
+                            chooser.getSelectedFile(), algorithm);
                 } catch (FileNotFoundException e) {
                     JOptionPane.showMessageDialog(null, "Le fichier choisi n'existe pas ou plus.", "Fichier non trouvé",
                             JOptionPane.ERROR_MESSAGE);
@@ -53,11 +62,13 @@ public class Main {
                             "Erreur chargement", JOptionPane.ERROR_MESSAGE);
                 }
             }
-        } else if (n == 1) {
+        } else if (n == 1) { // crée une config
             if (arrangement == null) {
                 arrangement = new DefaultPieceArrangement();
             }
-            new GUI(PlateauPuzzleFactory.generatePlateauPuzzle(arrangement), -1, null, -1, null);
+            PlateauPuzzle board = PlateauPuzzleFactory.generatePlateauPuzzle(arrangement);
+            algorithm.setBoard(board);
+            new GUI(board, -1, null, -1, null, algorithm);
         }
     }
 }

@@ -12,6 +12,11 @@ import java.awt.Color;
  */
 public class Settings {
     /**
+     * Profondeur de raisonnement de nos algorithmes d'intelligences artificielle.
+     */
+    public static final int AI_DEPTH = 10;
+
+    /**
      * Taille de chaque case en pixels.
      */
     public static final int BOX_SIZE = 40;
