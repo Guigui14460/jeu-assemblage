@@ -32,10 +32,11 @@ public class GUI extends JFrame {
         try {
             GraphicsPanel boardView = new GraphicsPanel(board);
             Container contentPane = this.getContentPane();
+            PiecesTable pieceTable = new PiecesTable(board, boardView);
             contentPane.removeAll();
             contentPane.add(boardView, BorderLayout.CENTER);
-            contentPane.add(new PiecesTable(board, boardView), BorderLayout.SOUTH);
-            contentPane.add(new ControlPartView(this, boardView, board, score, player, nbActionsOfBestScore, file),
+            contentPane.add(pieceTable, BorderLayout.SOUTH);
+            contentPane.add(new ControlPartView(this, boardView, board, score, player, nbActionsOfBestScore, file,pieceTable),
                     BorderLayout.EAST);
         } catch (IOException e) {
             e.printStackTrace();

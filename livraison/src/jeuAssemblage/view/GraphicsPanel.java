@@ -97,6 +97,13 @@ public class GraphicsPanel extends JPanel implements ModelListener, KeyListener,
         this.repaint();
     }
 
+
+    public void changeBoard(PlateauPuzzle board){
+        this.board = board;
+        this.board.addModelListener(this);
+        this.repaint();
+    };
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

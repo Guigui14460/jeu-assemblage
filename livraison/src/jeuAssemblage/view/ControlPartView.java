@@ -27,6 +27,9 @@ import piecesPuzzle.observer.ModelListener;
 
 import jeuAssemblage.model.aiAlgorithms.Capsule;
 import jeuAssemblage.model.aiAlgorithms.NegaMax;
+import jeuAssemblage.model.aiAlgorithms.NegaMin;
+
+import piecesPuzzle.Piece;
 
 /**
  * Classe permettant d'ajouter des contrôles sur l'application.
@@ -70,6 +73,9 @@ public class ControlPartView extends JPanel implements ModelListener, ActionList
 
     private GraphicsPanel boardView;
     private GUI gui;
+    
+    private PiecesTable piecesTable;
+   
 
     /**
      * Constructeur. Créer un panneau avec une ancienne configuration sauvegardée
@@ -88,7 +94,7 @@ public class ControlPartView extends JPanel implements ModelListener, ActionList
      *                     fichiers
      */
     public ControlPartView(GUI gui, GraphicsPanel boardView, PlateauPuzzle board, int bestScore, String bestPlayer,
-            int nbActionsOfBestScore, File oldFileConfig) throws IOException {
+            int nbActionsOfBestScore, File oldFileConfig,PiecesTable piecesTable) throws IOException {
         super(new GridLayout(6, 1, 0, 40));
         this.bestScore = bestScore;
         this.bestPlayer = bestPlayer;
@@ -99,6 +105,7 @@ public class ControlPartView extends JPanel implements ModelListener, ActionList
         this.board.addModelListener(this);
         this.boardView = boardView;
         this.gui = gui;
+        this.piecesTable = piecesTable;
         this.createElements();
     }
 
@@ -111,8 +118,8 @@ public class ControlPartView extends JPanel implements ModelListener, ActionList
      * @throws IOException levée lorsque l'on n'arrive pas à lire ou écrire dans les
      *                     fichiers
      */
-    public ControlPartView(GUI gui, GraphicsPanel boardView, PlateauPuzzle board) throws IOException {
-        this(gui, boardView, board, -1, null, -1, null);
+    public ControlPartView(GUI gui, GraphicsPanel boardView, PlateauPuzzle board, PiecesTable piecesTable) throws IOException {
+        this(gui, boardView, board, -1, null, -1, null,piecesTable);
     }
 
     /**
@@ -261,12 +268,16 @@ public class ControlPartView extends JPanel implements ModelListener, ActionList
     public void actionPerformed(ActionEvent e) {
         try {
             this.boardView.requestFocus();
-            NegaMax ia = new NegaMax(this.board, 1);
+            NegaMin ia = new NegaMin(this.board, 1);
 
             this.board.showBoard();
             System.out.println("----------------");
 
             Capsule cap = ia.start();
+            
+            this.piecesTable.reset(cap.getBoard(), boardView);
+            this.boardView.changeBoard(cap.getBoard());
+         
 
             cap.getBoard().showBoard();
 
