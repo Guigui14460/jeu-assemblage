@@ -48,8 +48,8 @@ public class RandomPieceFactory implements PieceAbstractFactory {
     public RandomPieceFactory(int maxX, int maxY, int maxWidth, int maxHeight) {
         this.x = (maxX == 0 ? 0 : RandomPieceFactory.random.nextInt(maxX));
         this.y = (maxY == 0 ? 0 : RandomPieceFactory.random.nextInt(maxY));
-        this.width = RandomPieceFactory.random.nextInt(maxWidth);
-        this.height = RandomPieceFactory.random.nextInt(maxHeight);
+        this.width = RandomPieceFactory.random.nextInt(maxWidth - 1) + 1;
+        this.height = RandomPieceFactory.random.nextInt(maxHeight - 1) + 1;
     }
 
     /**

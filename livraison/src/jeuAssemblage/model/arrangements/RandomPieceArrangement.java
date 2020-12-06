@@ -2,10 +2,12 @@ package jeuAssemblage.model.arrangements;
 
 import java.util.Random;
 
+import jeuAssemblage.model.PlateauPuzzle;
 import jeuAssemblage.model.pieceFactories.PieceAbstractFactory;
 import jeuAssemblage.model.pieceFactories.PieceFactory;
 import jeuAssemblage.model.pieceFactories.RandomPieceFactory;
 import jeuAssemblage.model.pieceFactories.RandomRotatedPieceFactory;
+import piecesPuzzle.Piece;
 
 /**
  * Cette classe permet de créer un arrangmenent totalement aléatoire.
@@ -27,9 +29,9 @@ public class RandomPieceArrangement implements PieceArrangement {
     private PieceAbstractFactory abstractFactory;
 
     /**
-     * Nombre de pièces à placer.
+     * Nombre de pièces à générer.
      */
-    private int pieceToPlace = 20;
+    private int pieceToGenerate;
 
     /**
      * Constructeur par défaut.
@@ -42,15 +44,7 @@ public class RandomPieceArrangement implements PieceArrangement {
         this.abstractFactory = abstractFactory;
         this.width = width;
         this.height = height;
-    }
-
-    /**
-     * Remplace le nombre de pièces à placer.
-     * 
-     * @param pieceToPlace nombre de pièces à placer
-     */
-    public void setPieceToPlace(int pieceToPlace) {
-        this.pieceToPlace = pieceToPlace;
+        this.pieceToGenerate = width * height / 10;
     }
 
     /**
@@ -68,8 +62,8 @@ public class RandomPieceArrangement implements PieceArrangement {
             int maxHeight, int maxRotation) {
         maxWidth = RandomPieceArrangement.random.nextInt(maxWidth - minWidth) + minWidth;
         maxHeight = RandomPieceArrangement.random.nextInt(maxHeight - minHeight) + minHeight;
-        PieceAbstractFactory factory = new RandomRotatedPieceFactory(maxWidth - maxWidth / 2, maxHeight - maxHeight / 2,
-                maxWidth / 2, maxHeight / 2, maxRotation);
+        PieceAbstractFactory factory = new RandomRotatedPieceFactory(maxWidth, maxHeight,
+                (maxWidth / 3 > 1 ? maxWidth / 3 : 1), (maxHeight / 3 > 1 ? maxHeight / 3 : 1), maxRotation);
         return new RandomPieceArrangement(factory, maxWidth, maxHeight);
     }
 
@@ -87,22 +81,29 @@ public class RandomPieceArrangement implements PieceArrangement {
             int maxHeight) {
         maxWidth = RandomPieceArrangement.random.nextInt(maxWidth - minWidth) + minWidth;
         maxHeight = RandomPieceArrangement.random.nextInt(maxHeight - minHeight) + minHeight;
-        PieceAbstractFactory factory = new RandomPieceFactory(maxWidth - maxWidth / 2, maxHeight - maxHeight / 2,
-                maxWidth / 2, maxHeight / 2);
+        PieceAbstractFactory factory = new RandomPieceFactory(maxWidth, maxHeight,
+                (maxWidth / 3 > 1 ? maxWidth / 3 : 1), (maxHeight / 3 > 1 ? maxHeight / 3 : 1));
         return new RandomPieceArrangement(factory, maxWidth, maxHeight);
     }
 
     @Override
     public Arrangement generateArrangement() {
         Arrangement arrangement = new Arrangement(this.width, this.height);
-        for (int i = 0; i < this.pieceToPlace; i++) {
+        PlateauPuzzle board = new PlateauPuzzle(this.width, this.height, 100);
+        int i = 0, pieceAdded = 0;
+        while (pieceAdded < this.pieceToGenerate && i < 100) { // variable i pour éviter une boucle infinie
             try {
-                arrangement.addPieces(PieceFactory.getPiece(this.abstractFactory));
+                Piece piece = PieceFactory.getPiece(this.abstractFactory);
+                if (board.addPiece(piece)) {
+                    arrangement.addPieces(piece);
+                    pieceAdded++;
+                }
+                i++;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        arrangement.setMaxAvailableActions(arrangement.getPieces().size() * 6);
+        arrangement.setMaxAvailableActions(arrangement.getPieces().size() * 2);
         return arrangement;
     }
 }
