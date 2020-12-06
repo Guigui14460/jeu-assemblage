@@ -12,22 +12,22 @@ public class PlateauPuzzleFactory {
      * Génère un plateau de jeu venant d'une usine abstraite à arrangement de
      * pièces.
      * 
-     * @param factory stratégie de création de plateau à utiliser (usine)
+     * @param strategy stratégie de création de plateau à utiliser (usine)
      * @return plateau de jeu
      */
-    public static PlateauPuzzle generatePlateauPuzzle(PieceArrangement factory) {
-        return PlateauPuzzleFactory.getPlateauPuzzle(PlateauPuzzleFactory.getArrangement(factory));
+    public static PlateauPuzzle generatePlateauPuzzle(PieceArrangement strategy) {
+        return PlateauPuzzleFactory.getPlateauPuzzle(PlateauPuzzleFactory.getArrangement(strategy));
     }
 
     /**
      * Récupère un arrangement à partir d'une usine abstraite à arrangement de
      * pièces.
      * 
-     * @param factory stratégie de création de plateau à utiliser (usine)
+     * @param strategy stratégie de création de plateau à utiliser (usine)
      * @return arrangement fabriqué
      */
-    public static Arrangement getArrangement(PieceArrangement factory) {
-        return factory.generateArrangement();
+    public static Arrangement getArrangement(PieceArrangement strategy) {
+        return strategy.generateArrangement();
     }
 
     /**

@@ -98,8 +98,9 @@ public class Arrangement {
      * Ajoute des pièces à la liste de pièces de l'arrangement.
      * 
      * @param pieces pièces à ajouter
+     * @return booléen représentant le fait que les pièces ont toutes été ajoutées
      */
-    public void addPieces(Piece... pieces) {
-        this.pieces.addAll(Arrays.asList(pieces));
+    public boolean addPieces(Piece... pieces) {
+        return this.pieces.addAll(Arrays.asList(pieces));
     }
 }

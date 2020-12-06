@@ -214,6 +214,7 @@ public class PlateauPuzzle extends AbstractListenableModel implements ModelListe
             return false;
         if (!this.pieces.add(piece))
             return false;
+        piece.addModelListener(this);
         this.fireChange();
         return true;
     }

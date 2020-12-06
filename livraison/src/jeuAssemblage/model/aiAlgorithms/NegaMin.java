@@ -99,12 +99,17 @@ public class NegaMin implements AI {
             PlateauPuzzle tmpBoard;
             for (int i = 0; i < this.board.getNumberOfPiece(); i++) {
                 Piece p = this.board.getPiece(i);
+                // pour les boucles, on ne prend que les coordonnées où la pièce pourrait être
+                // déplacée
                 for (int j = -p.getX(); j < this.board.getWidth() - p.getWidth() - p.getX(); j++) {
                     for (int k = -p.getY(); k < this.board.getHeight() - p.getHeight() - p.getY(); k++) {
-                        for (Rotate rotationAngle : Rotate.values()) {
+                        for (Rotate rotationAngle : Rotate.values()) { // on regarde les 2 angles
                             for (int l = 0; l <= 2; l++) {
                                 if (!(j == 0 && k == 0
                                         && (l == 0 || (l == 2 && Rotate.MINUS_90_DEGREES.equals(rotationAngle))))) {
+                                    // on ne rentre ici que si on translate la pièce et/ou si on la tourne (sauf 2x
+                                    // MINUS_90_DEGREES pour éviter de créer un noeud fils inutile car pareil que 2x
+                                    // PLUS_90_DEGREES)
                                     tmpBoard = board.clone();
                                     if (tmpBoard.translateAndRotatePiece(tmpBoard.getPiece(i), j, k, rotationAngle,
                                             l)) {
