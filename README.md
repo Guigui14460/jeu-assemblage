@@ -1,4 +1,4 @@
-# Site de pandémies
+# Jeu d'assemblage de pièces
 
 Projet universitaire proposé dans la matière Méthodes de Conception en L3 Informatique par l'Université de Caen Normandie afin de nous faire découvrir l'implémentation des design pattern au sein d'une application simple.
 
